@@ -24,4 +24,20 @@ public class CharacterFX : MonoBehaviour
 
         sr.material = originalMat;
     }
+
+    public void RedColorBlink()
+    {
+        if(sr.color != Color.white)
+        {
+            sr.color = Color.white;
+        }
+        else
+            sr.color = Color.red;
+    }
+
+    public void CanelRedBlink()
+    {
+        CancelInvoke();
+        sr.color = Color.white;
+    } 
 }

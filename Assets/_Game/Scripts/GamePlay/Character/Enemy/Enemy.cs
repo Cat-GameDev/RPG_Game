@@ -5,16 +5,26 @@ using DG.Tweening;
 
 public abstract class Enemy : Character
 {
-    [SerializeField] float attackRange;
-    private Character target;
-    [SerializeField] float maxSpeed;
+    public const float ResetAttackTimer = 1.5f;
+    [SerializeField] protected float attackRange;
+    protected Character target;
+    [SerializeField] protected float maxSpeed;
     float defaultSpeed;
-    [SerializeField] float minDistanceToAttack;
+    [SerializeField] protected float minDistanceToAttack;
+    [SerializeField] protected CharacterFX fx;
+
+    [Header("Stun info")]
+    [SerializeField] protected float stunDuration;
+    [SerializeField] protected Vector2 stunDirection;
+    [SerializeField] protected GameObject counterImage;
+    protected bool canBeStuned;
 
     public override void OnInit()
     {
         base.OnInit();
         defaultSpeed = moveSpeed;
+        stateTimer = 0;
+        CloseCounterAttackWindow();
     }
 
     public void Moving()
@@ -23,7 +33,7 @@ public abstract class Enemy : Character
         rb.velocity = transform.right * moveSpeed;
     }
 
-    public void StopMoving()
+    public virtual void StopMoving()
     {
         ChangeAnim(Constants.ANIM_IDLE);
         rb.velocity = Vector2.zero;
@@ -88,6 +98,31 @@ public abstract class Enemy : Character
         else stateMachine.ChangeState(IdleState);
     }
 
+    public void OpenCounterAttackWindow()
+    {
+        canBeStuned = true;
+        if(counterImage != null)
+            counterImage.SetActive(true);
+    }
+
+    public void CloseCounterAttackWindow()
+    {
+        canBeStuned = false;
+        if(counterImage != null)
+            counterImage.SetActive(false);
+    }
+
+    public virtual bool CanBeStuned()
+    {
+        if(canBeStuned)
+        {
+            canBeStuned = false;
+            stateMachine.ChangeState(StunState);
+            return true;
+        }
+        return false;
+    }
+
     internal void IncreaseMoveSpeed()
     {
         moveSpeed = maxSpeed;
@@ -100,37 +135,35 @@ public abstract class Enemy : Character
 
     protected override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
-        float timer = 0;
         float randomTime = 0;
         onEnter = () =>
         {
-            timer = 0;
+            stateTimer = 0;
             randomTime = Random.Range(1,2);
             StopMoving();
         };
 
         onExecute = () =>
         {
-            timer += Time.deltaTime;
-            if(timer > randomTime)
+            stateTimer += Time.deltaTime;
+            if(stateTimer > randomTime)
                 stateMachine.ChangeState(PatrolState);
         };
     }
 
     protected void PatrolState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
-        float timer = 0;
         float randomTime = 0;
         onEnter = () =>
         {
-            timer = 0;
+            stateTimer = 0;
             randomTime = Random.Range(1,3);
             
         };
 
         onExecute = () =>
         {
-            timer += Time.deltaTime;
+            stateTimer += Time.deltaTime;
             if(target != null)
             {
                 ChangeDirection(target.transform.position.x > TF.position.x);
@@ -143,7 +176,7 @@ public abstract class Enemy : Character
             }
             else 
             {
-                if(timer < randomTime)
+                if(stateTimer < randomTime)
                     Moving();
                 else
                     stateMachine.ChangeState(IdleState);
@@ -154,7 +187,6 @@ public abstract class Enemy : Character
 
     protected void AttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
-        float timer = 0;
         onEnter = () =>
         {
             if(target!= null)
@@ -167,15 +199,39 @@ public abstract class Enemy : Character
 
         onExecute = () =>
         {
-            timer+=Time.deltaTime;
-            if(timer >= 1.5f)
+            stateTimer+=Time.deltaTime;
+            if(stateTimer >= ResetAttackTimer)
             {
                 stateMachine.ChangeState(PatrolState);
             }
         };
     }
 
+    protected virtual void StunState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
 
+        onEnter = () =>
+        {
+            ChangeAnim(Constants.ANIM_STUN);
+            stateTimer = 0;
+            rb.velocity = new Vector2(stunDirection.x * -GetDirection(isRight).x, stunDirection.y);
+            fx.InvokeRepeating(nameof(fx.RedColorBlink), 0, 0.1f);
+        };
+
+        onExecute = () =>
+        {
+            stateTimer += Time.deltaTime;
+            if(stateTimer > stunDuration)
+            {
+                stateMachine.ChangeState(IdleState);
+            }
+        };
+
+        onExit = () =>
+        {
+            fx.CanelRedBlink();
+        };
+    }
     protected void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag(Constants.ENEMY_WALL))

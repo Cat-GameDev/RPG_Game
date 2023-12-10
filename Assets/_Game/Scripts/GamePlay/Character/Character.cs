@@ -11,6 +11,7 @@ public abstract class Character : GameUnit, IHit
     [SerializeField] protected float damage;
     [SerializeField] protected AttackArea attackArea;
     protected StateMachine stateMachine = new StateMachine();
+    protected float stateTimer;
     string currentAnim;
     public float hp;
     public bool IsDead => hp <= 0;
@@ -81,7 +82,7 @@ public abstract class Character : GameUnit, IHit
         ActionAttack();
     }
 
-    protected void ChangeAnim(string animName)
+    public void ChangeAnim(string animName)
     {
         if(currentAnim != animName)
         {

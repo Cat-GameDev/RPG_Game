@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 public class UIGamePlay : UICanvas
 {
-    [SerializeField] UnityEvent OnJump, OnDash, OnAttack;
+    [SerializeField] UnityEvent OnJump, OnDash, OnAttack, OnCounterAttack;
 
     void Update()
     {
@@ -23,6 +23,11 @@ public class UIGamePlay : UICanvas
     public void AttackButton()
     {
         OnAttack?.Invoke();
+    }
+
+    public void CounterAttackButton()
+    {
+        OnCounterAttack?.Invoke();
     }
 
     public void test()

@@ -1,16 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Unity.VisualScripting;
-using Unity.Burst.CompilerServices;
-using UnityEngine.EventSystems;
 
 public class Player : Character
 {
+    public const int ATTACK_COMBO = 2;
+    public const float TIME_RESET_ATTACK = 2f;
+    public const float MOVE_ATTACK = 0.1f;
+    public const float COUNTER_ATTACK_DURATION = 0.4f;
     [SerializeField] FixedJoystick joystickControl;
-    [SerializeField] FixedJoystick throwSwordJoystick;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundCheckDis;
@@ -32,13 +30,15 @@ public class Player : Character
     [SerializeField] float comboTime;
     float comboTimeWidow;
     bool isAttacking;
-    public bool canAttack;
+    bool canAttack;
     int comboCounter;
     SkillManager skill;
     //aimSwrod
     bool isAimSword;
-
-    [SerializeField] EventSystem eventSystem;
+    public float counterAttackTimer;
+    float counterAttackCooldown;
+    [SerializeField] CounterAttackArea counterAttackArea;
+    bool isSuccessfulCounterAttack;
 
 
     void Start()
@@ -49,18 +49,18 @@ public class Player : Character
     void Update()
     {
         comboTimeWidow -= Time.deltaTime;
-
+        counterAttackCooldown += Time.deltaTime;
         stateMachine?.Execute();
         //Debug.Log(stateMachine.name);
         horizontalInput = joystickControl.Horizontal;
         verticaleInput = joystickControl.Vertical;
 
         // Check for joystick input to trigger AimSwordState
-         if ((Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f) && !isAimSword)
-        {
-            stateMachine.ChangeState(AimSwordState);
-            return;
-        }
+        //  if ((Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f) && !isAimSword)
+        // {
+        //     stateMachine.ChangeState(AimSwordState);
+        //     return;
+        // }
 
         if(isWallDetected() && !IsGrounded() && !isJumping)
             stateMachine.ChangeState(WallSildeState);
@@ -77,14 +77,9 @@ public class Player : Character
     public override void OnInit()
     {
         base.OnInit();
-        isJumping = isAttacking = isDashing = canAttack = isAimSword = false;
+        isJumping = isAttacking = isDashing = canAttack = isAimSword = isSuccessfulCounterAttack = false;
     }
 
-    public void ActiveEvenSystem()
-    {
-        eventSystem.enabled = true;
-        AimSwordOver();
-    }
 
     private void Moving()
     {
@@ -137,6 +132,17 @@ public class Player : Character
         }
     }
 
+    public void CounterAttack()
+    {
+        if(counterAttackTimer < counterAttackCooldown)
+        {
+            stateMachine.ChangeState(CounterAttackState);
+            counterAttackCooldown = 0;
+        }
+        
+    }
+
+
     private bool isWallDetected()
     {
         RaycastHit2D hit = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, groundLayerMask);
@@ -152,14 +158,19 @@ public class Player : Character
     }
     private bool IsGrounded() => Physics2D.Raycast(TF.position, Vector2.down, groundCheckDis, groundLayerMask);
 
+    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack)
+    {
+        this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
+    }
 
     public override void AttackOver()
     {
         base.AttackOver();
         isAttacking = false;
+        isSuccessfulCounterAttack = false;
         comboCounter++;
 
-        if(comboCounter > 2)
+        if(comboCounter > ATTACK_COMBO)
             comboCounter = 0;
     }
     public void AimSwordOver()
@@ -171,10 +182,6 @@ public class Player : Character
     {
         onEnter = () =>
         {
-            if(eventSystem.enabled == false)
-            {
-                Invoke(nameof(ActiveEvenSystem), 0.2f);
-            }
             ChangeAnim(Constants.ANIM_IDLE);
             rb.velocity = Vector2.zero;
         };
@@ -332,8 +339,6 @@ public class Player : Character
    
     private void PrimaryAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
-        float timerReset = 2f;
-        float attackCooldown = 0f;
         onEnter = () =>
         {   
             ChangeAnim(Constants.ANIM_ATTACK);
@@ -341,20 +346,18 @@ public class Player : Character
             comboTimeWidow = comboTime;
             isAttacking = true;
             rb.velocity = Vector2.zero;
-            TF.position = new Vector2(TF.position.x + 0.1f * GetDirection(isRight).x, TF.position.y);
-            timerReset = 2f;
-            attackCooldown = 0f;
+            TF.position = new Vector2(TF.position.x + MOVE_ATTACK * GetDirection(isRight).x, TF.position.y);
+            stateTimer = 0f;
             canAttack = true;
         };
 
         onExecute = () =>
         {
-            attackCooldown += Time.deltaTime;
-            if(!isAttacking || attackCooldown > timerReset)
+            stateTimer += Time.deltaTime;
+            if(!isAttacking || stateTimer > TIME_RESET_ATTACK)
             {
                 isAttacking = false;
                 stateMachine.ChangeState(IdleState);
-                attackCooldown = 0f;
             }
                 
         };
@@ -362,38 +365,87 @@ public class Player : Character
     
     private void AimSwordState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
-        float timerReset = 5f;
-        float aimSwordCooldown = 0f;
+        // float timerReset = 5f;
+        // float aimSwordCooldown = 0f;
+        // onEnter = () =>
+        // {   
+        //     ChangeAnim(Constants.ANIM_AIMSWORD);
+        //     isAimSword = true;
+        //     timerReset = 5f;
+        //     aimSwordCooldown = 0f;
+        // };
+
+        // onExecute = () =>
+        // {
+        //     aimSwordCooldown += Time.deltaTime;
+        //     if(aimSwordCooldown > timerReset)
+        //     {
+        //         throwSwordJoystick.ResetJoystick();
+        //         aimSwordCooldown = 0;
+        //         eventSystem.enabled = false;
+        //         stateMachine.ChangeState(IdleState);
+        //     }
+        //     else if (Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f)
+        //     {
+        //         return;
+        //     }
+        //     else
+        //     {
+        //         ChangeAnim(Constants.ANIM_THROWSWORD);
+        //         if(!isAimSword)
+        //             stateMachine.ChangeState(IdleState);
+        //     }
+        // };
+    }
+
+    private void CounterAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
         onEnter = () =>
         {   
-            ChangeAnim(Constants.ANIM_AIMSWORD);
-            isAimSword = true;
-            timerReset = 5f;
-            aimSwordCooldown = 0f;
+            ChangeAnim(Constants.ANIM_COUNTER_ATTACK);
+            rb.velocity = Vector2.zero;
+            stateTimer = 0;
+            counterAttackArea.gameObject.SetActive(true);
         };
 
         onExecute = () =>
         {
-            aimSwordCooldown += Time.deltaTime;
-            if(aimSwordCooldown > timerReset)
+            stateTimer += Time.deltaTime;
+            if(isSuccessfulCounterAttack)
             {
-                throwSwordJoystick.ResetJoystick();
-                aimSwordCooldown = 0;
-                eventSystem.enabled = false;
-                stateMachine.ChangeState(IdleState);
-            }
-            else if (Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f)
-            {
-                return;
+                ChangeAnim(Constants.ANIM_SUCCESSFUL_COUNTER_ATTACK);
             }
             else
             {
-                ChangeAnim(Constants.ANIM_THROWSWORD);
-                if(!isAimSword)
+                if(stateTimer > COUNTER_ATTACK_DURATION)
+                {
                     stateMachine.ChangeState(IdleState);
+                }
             }
+
+        };
+
+        onExit = () =>
+        {
+            counterAttackArea.gameObject.SetActive(false);
         };
     }
+
+
+    // private void State(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    // {
+    //     onEnter = () =>
+    //     {   
+
+    //     };
+
+    //     onExecute = () =>
+    //     {
+                
+    //     };
+    // }
+
+
 
     void OnDrawGizmos()
     {

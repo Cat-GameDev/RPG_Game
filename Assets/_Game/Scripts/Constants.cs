@@ -14,6 +14,10 @@ public static class Constants
     public const string ANIM_DIE = "die";
     public const string ANIM_AIMSWORD = "aimSword";
     public const string ANIM_THROWSWORD= "throwSword";
+    public const string ANIM_REACT = "react";
+    public const string ANIM_STUN = "stun";
+    public const string ANIM_COUNTER_ATTACK = "counterAttack";
+    public const string ANIM_SUCCESSFUL_COUNTER_ATTACK = "succesfulCounterAttack";
     public const string ENEMY_WALL = "EnemyWall";
     public const string PLAYER_TAG = "Player";
 }
