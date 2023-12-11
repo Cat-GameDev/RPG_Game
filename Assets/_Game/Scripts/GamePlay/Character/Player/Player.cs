@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class Player : Character
 {
     public const int ATTACK_COMBO = 2;
     public const float TIME_RESET_ATTACK = 2f;
     public const float MOVE_ATTACK = 0.1f;
-    public const float COUNTER_ATTACK_DURATION = 0.4f;
+    public const float COUNTER_ATTACK_DURATION = 0.2f;
     [SerializeField] FixedJoystick joystickControl;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] LayerMask groundLayerMask;
@@ -48,12 +49,18 @@ public class Player : Character
 
     void Update()
     {
+        if(IsDead)
+            return;
+        
         comboTimeWidow -= Time.deltaTime;
         counterAttackCooldown += Time.deltaTime;
         stateMachine?.Execute();
         //Debug.Log(stateMachine.name);
         horizontalInput = joystickControl.Horizontal;
         verticaleInput = joystickControl.Vertical;
+
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticaleInput = Input.GetAxisRaw("Vertical");
 
 
         if(isWallDetected() && !IsGrounded() && !isJumping)
@@ -65,7 +72,36 @@ public class Player : Character
             comboCounter = 0;
         }
 
+        CheckInput();
         
+    }
+
+    private void CheckInput()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            Attack();
+        }
+
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            Dash();
+        }
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            CounterAttack();
+        }
+
+        if(Input.GetKeyDown(KeyCode.U))
+        {
+            ThrowAttack();
+        }
     }
 
     public override void OnInit()
@@ -95,9 +131,6 @@ public class Player : Character
     
     public void Jump()
     {
-        if(isAimSword || IsDead)
-            return;
-
         if(IsGrounded())
             stateMachine.ChangeState(JumpState);
         else if(isWallDetected())
@@ -106,9 +139,6 @@ public class Player : Character
 
     public void Dash()
     {
-        if(isAimSword || IsDead)
-            return;
-
         if(skill.Dash_Skill.CanUseSkill())
         {
             stateMachine.ChangeState(DashState);
@@ -118,8 +148,6 @@ public class Player : Character
 
     public void Attack()
     {
-        if(isAimSword || IsDead)
-            return;
 
         if(!isDashing && !isJumping && !(rb.velocity.y < 0) && !isAttacking)
         {
@@ -360,6 +388,12 @@ public class Player : Character
             }
                 
         };
+
+        onExit = () =>
+        {
+            isAttacking = false;
+            DeActiveAttack();
+        };
     }
     
     private void AimSwordState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -412,7 +446,7 @@ public class Player : Character
             stateTimer += Time.deltaTime;
             if(isSuccessfulCounterAttack)
             {
-                ChangeAnim(Constants.ANIM_SUCCESSFUL_COUNTER_ATTACK);
+                stateMachine.ChangeState(SuccesfulCounterAttackState);
             }
             else
             {
@@ -430,6 +464,21 @@ public class Player : Character
         };
     }
 
+    private void SuccesfulCounterAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
+        onEnter = () =>
+        {   
+            ChangeAnim(Constants.ANIM_SUCCESSFUL_COUNTER_ATTACK);
+        };
+
+        onExecute = () =>
+        {
+            if(!isSuccessfulCounterAttack)
+            {
+                stateMachine.ChangeState(IdleState);
+            }
+        };
+    }
 
     // private void State(ref Action onEnter, ref Action onExecute, ref Action onExit)
     // {

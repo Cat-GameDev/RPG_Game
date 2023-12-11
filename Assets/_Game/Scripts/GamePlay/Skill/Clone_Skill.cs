@@ -9,6 +9,7 @@ public class Clone_Skill : Skill
     public void CreateClone(Vector3 position, bool isRight, bool canAttack, float damage)
     {
         Clone_Skill_Controller newClone = SimplePool.Spawn<Clone_Skill_Controller>(PoolType.Clone_Skill);
+        newClone.OnInit();
         newClone.SetupClone(position, cloneDuration, isRight, canAttack, damage);
     }
 }

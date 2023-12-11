@@ -4,10 +4,6 @@ using Random = UnityEngine.Random;
 
 public class Enemy_Skeleton : Enemy
 {
-    public override void OnInit()
-    {
-        base.OnInit();
-    }
     public override void StopMoving()
     {
         ChangeAnim(Random.Range(0,2) == 0 ? Constants.ANIM_IDLE : Constants.ANIM_REACT);
@@ -19,7 +15,7 @@ public class Enemy_Skeleton : Enemy
     {
         if(isKnockback)
             return;
-    
+
         stateMachine?.Execute();
     }
 

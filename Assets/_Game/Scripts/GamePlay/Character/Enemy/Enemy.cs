@@ -80,7 +80,7 @@ public abstract class Enemy : Character
     {
         this.isRight = isRight;
 
-        TF.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector2.up * 180f);
+        TF.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector3.up * 180f);
     }
 
     internal void SetTarget(Character character)
@@ -97,17 +97,11 @@ public abstract class Enemy : Character
         else stateMachine.ChangeState(IdleState);
     }
 
-    public void OpenCounterAttackWindow()
-    {
-        canBeStuned = true;
-    }
+    public void OpenCounterAttackWindow() => canBeStuned = true;
+    public void CloseCounterAttackWindow() => canBeStuned = false;
 
-    public void CloseCounterAttackWindow()
-    {
-        canBeStuned = false;
-    }
 
-    public virtual bool CanBeStuned()
+    public virtual bool CanBeStunned()
     {
         if(canBeStuned)
         {
@@ -209,7 +203,7 @@ public abstract class Enemy : Character
         {
             ChangeAnim(Constants.ANIM_STUN);
             stateTimer = 0;
-            rb.velocity = new Vector2(stunDirection.x * -GetDirection(isRight).x, stunDirection.y);
+            rb.AddForce(stunDirection * -GetDirection(isRight), ForceMode2D.Impulse);
             fx.InvokeRepeating(nameof(fx.RedColorBlink), 0, 0.1f);
         };
 

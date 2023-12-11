@@ -8,21 +8,15 @@ public class EnemySight : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) 
     {
-        if (other.CompareTag(Constants.PLAYER_TAG)) 
-        {
-            Character playerCharacter = Cache.GetCharacter(other);
-            enemy.SetTarget(playerCharacter);
-            enemy.IncreaseMoveSpeed();
-        }
+        Character playerCharacter = Cache.GetCharacter(other);
+        enemy.SetTarget(playerCharacter);
+        enemy.IncreaseMoveSpeed();
     } 
 
     private void OnTriggerExit2D(Collider2D other) 
     {
-        if(other.CompareTag(Constants.PLAYER_TAG))
-        {
-            enemy.SetTarget(null);
-            enemy.ResetMoveSpeed();
-        }
+        enemy.SetTarget(null);
+        enemy.ResetMoveSpeed();
     }
 
 }

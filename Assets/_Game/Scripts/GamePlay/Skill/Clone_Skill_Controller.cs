@@ -41,13 +41,4 @@ public class Clone_Skill_Controller : Character
         TF.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector2.up * 180f);
     }
 
-
-    public override void OnDespawn()
-    {
-        base.OnDespawn();
-        OnInit();
-    }
-
-
-
 }
