@@ -16,7 +16,6 @@ public abstract class Enemy : Character
     [Header("Stun info")]
     [SerializeField] protected float stunDuration;
     [SerializeField] protected Vector2 stunDirection;
-    [SerializeField] protected GameObject counterImage;
     protected bool canBeStuned;
 
     public override void OnInit()
@@ -24,7 +23,7 @@ public abstract class Enemy : Character
         base.OnInit();
         defaultSpeed = moveSpeed;
         stateTimer = 0;
-        CloseCounterAttackWindow();
+        canBeStuned = false;
     }
 
     public void Moving()
@@ -101,15 +100,11 @@ public abstract class Enemy : Character
     public void OpenCounterAttackWindow()
     {
         canBeStuned = true;
-        if(counterImage != null)
-            counterImage.SetActive(true);
     }
 
     public void CloseCounterAttackWindow()
     {
         canBeStuned = false;
-        if(counterImage != null)
-            counterImage.SetActive(false);
     }
 
     public virtual bool CanBeStuned()

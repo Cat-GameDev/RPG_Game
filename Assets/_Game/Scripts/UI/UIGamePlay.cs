@@ -1,48 +1,32 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class UIGamePlay : UICanvas
 {
-    [SerializeField] UnityEvent OnJump, OnDash, OnAttack, OnCounterAttack;
+    public Button[] buttons;
+    Player player;
+    private Action[] actions;
 
-    void Update()
+    void Start()
     {
-        test();
-    }
-    public void JumpButton()
-    {
-        OnJump?.Invoke();
-    }
+        player = LevelManager.Instance.Player;
 
-    public void DashButton()
-    {
-        OnDash?.Invoke();
-    }
-
-    public void AttackButton()
-    {
-        OnAttack?.Invoke();
-    }
-
-    public void CounterAttackButton()
-    {
-        OnCounterAttack?.Invoke();
-    }
-
-    public void test()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
+        actions = new Action[]
         {
-            OnJump?.Invoke();
-        }
-        if(Input.GetKeyDown(KeyCode.K))
+            player.Jump,
+            player.Dash,
+            player.Attack,
+            player.CounterAttack,
+            player.ThrowAttack
+        };
+
+        for (int i = 0; i < buttons.Length; i++)
         {
-            OnDash?.Invoke();
-        }
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            OnAttack?.Invoke();
+            int index = i; 
+            buttons[i].onClick.AddListener(() => actions[index].Invoke());
         }
     }
 }

@@ -55,12 +55,6 @@ public class Player : Character
         horizontalInput = joystickControl.Horizontal;
         verticaleInput = joystickControl.Vertical;
 
-        // Check for joystick input to trigger AimSwordState
-        //  if ((Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f) && !isAimSword)
-        // {
-        //     stateMachine.ChangeState(AimSwordState);
-        //     return;
-        // }
 
         if(isWallDetected() && !IsGrounded() && !isJumping)
             stateMachine.ChangeState(WallSildeState);
@@ -78,6 +72,7 @@ public class Player : Character
     {
         base.OnInit();
         isJumping = isAttacking = isDashing = canAttack = isAimSword = isSuccessfulCounterAttack = false;
+        counterAttackArea.gameObject.SetActive(false);
     }
 
 
@@ -142,6 +137,10 @@ public class Player : Character
         
     }
 
+    public void ThrowAttack()
+    {
+
+    }
 
     private bool isWallDetected()
     {
