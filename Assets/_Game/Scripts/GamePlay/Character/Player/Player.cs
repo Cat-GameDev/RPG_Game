@@ -9,6 +9,7 @@ public class Player : Character
     public const float TIME_RESET_ATTACK = 2f;
     public const float MOVE_ATTACK = 0.1f;
     public const float COUNTER_ATTACK_DURATION = 0.2f;
+
     [SerializeField] FixedJoystick joystickControl;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] LayerMask groundLayerMask;
@@ -34,12 +35,17 @@ public class Player : Character
     bool canAttack;
     int comboCounter;
     SkillManager skill;
-    //aimSwrod
-    bool isAimSword;
+    //counter Attack
+
     public float counterAttackTimer;
     float counterAttackCooldown;
     [SerializeField] CounterAttackArea counterAttackArea;
     bool isSuccessfulCounterAttack;
+
+    //ThrowAttack
+    bool isThrowAttack;
+    bool isCatched;
+    Sword_Skil_Controller currentSword;
 
 
     void Start()
@@ -107,8 +113,9 @@ public class Player : Character
     public override void OnInit()
     {
         base.OnInit();
-        isJumping = isAttacking = isDashing = canAttack = isAimSword = isSuccessfulCounterAttack = false;
+        isJumping = isAttacking = isDashing = canAttack = isThrowAttack = isSuccessfulCounterAttack = isCatched = false;
         counterAttackArea.gameObject.SetActive(false);
+        currentSword = null;
     }
 
 
@@ -131,6 +138,9 @@ public class Player : Character
     
     public void Jump()
     {
+        if(isThrowAttack)
+            return;
+
         if(IsGrounded())
             stateMachine.ChangeState(JumpState);
         else if(isWallDetected())
@@ -139,6 +149,9 @@ public class Player : Character
 
     public void Dash()
     {
+        if(isThrowAttack)
+            return;
+
         if(skill.Dash_Skill.CanUseSkill())
         {
             stateMachine.ChangeState(DashState);
@@ -149,7 +162,7 @@ public class Player : Character
     public void Attack()
     {
 
-        if(!isDashing && !isJumping && !(rb.velocity.y < 0) && !isAttacking)
+        if(!isDashing && !isJumping && !(rb.velocity.y < 0) && !isAttacking && !isThrowAttack) 
         {
             stateMachine.ChangeState(PrimaryAttackState);
         }
@@ -157,6 +170,9 @@ public class Player : Character
 
     public void CounterAttack()
     {
+        if(isThrowAttack)
+            return;
+
         if(counterAttackTimer < counterAttackCooldown)
         {
             stateMachine.ChangeState(CounterAttackState);
@@ -167,8 +183,21 @@ public class Player : Character
 
     public void ThrowAttack()
     {
-
+        if(!currentSword)
+        {
+            stateMachine.ChangeState(ThrowAttackState);
+        }
     }
+
+    public void SetCurrentSword(Sword_Skil_Controller sword_Skil_Controller) => currentSword = sword_Skil_Controller;
+
+    public void CatchTheSword()
+    {
+        stateMachine.ChangeState(CatchState);
+    }
+
+
+    public void CatchOver() => isCatched = false;
 
     private bool isWallDetected()
     {
@@ -200,9 +229,9 @@ public class Player : Character
         if(comboCounter > ATTACK_COMBO)
             comboCounter = 0;
     }
-    public void AimSwordOver()
+    public void ThrowAttackOver()
     {
-        isAimSword = false;
+        isThrowAttack = false;
     }
 
     protected override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -395,42 +424,6 @@ public class Player : Character
             DeActiveAttack();
         };
     }
-    
-    private void AimSwordState(ref Action onEnter, ref Action onExecute, ref Action onExit)
-    {
-        // float timerReset = 5f;
-        // float aimSwordCooldown = 0f;
-        // onEnter = () =>
-        // {   
-        //     ChangeAnim(Constants.ANIM_AIMSWORD);
-        //     isAimSword = true;
-        //     timerReset = 5f;
-        //     aimSwordCooldown = 0f;
-        // };
-
-        // onExecute = () =>
-        // {
-        //     aimSwordCooldown += Time.deltaTime;
-        //     if(aimSwordCooldown > timerReset)
-        //     {
-        //         throwSwordJoystick.ResetJoystick();
-        //         aimSwordCooldown = 0;
-        //         eventSystem.enabled = false;
-        //         stateMachine.ChangeState(IdleState);
-        //     }
-        //     else if (Mathf.Abs(throwSwordJoystick.Horizontal) > 0.1f || Mathf.Abs(throwSwordJoystick.Vertical) > 0.1f)
-        //     {
-        //         return;
-        //     }
-        //     else
-        //     {
-        //         ChangeAnim(Constants.ANIM_THROWSWORD);
-        //         if(!isAimSword)
-        //             stateMachine.ChangeState(IdleState);
-        //     }
-        // };
-    }
-
     private void CounterAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
         onEnter = () =>
@@ -480,6 +473,65 @@ public class Player : Character
         };
     }
 
+    private Quaternion throwAttackRotation;
+     private void ThrowAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
+        onEnter = () =>
+        {   
+            //lưu lại rotation của Player
+            throwAttackRotation = TF.rotation;
+            ChangeAnim(Constants.ANIM_THROW_ATTACK);
+            isThrowAttack = true;
+            rb.velocity = Vector2.zero;
+        };
+
+        onExecute = () =>
+        {
+            if(!isThrowAttack)
+            {
+                stateMachine.ChangeState(IdleState);
+            }
+        };
+    }
+
+    private void CatchState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
+        onEnter = () =>
+        {   
+            //rotation của Player = đã lưu ở trên ThrowAttackState
+            TF.rotation = throwAttackRotation;
+            
+            ChangeAnim(Constants.ANIM_CATCH);
+            rb.velocity = Vector2.zero;
+            isCatched = true;
+            if (TF.rotation == Quaternion.Euler(Vector3.zero))
+            {
+                rb.velocity = new Vector2(-2f, rb.velocity.y);
+            }
+            else 
+            {
+                rb.velocity = new Vector2(2f, rb.velocity.y);
+            }
+            
+        };
+
+        onExecute = () =>
+        {
+            if(!isCatched)
+            {
+                stateMachine.ChangeState(IdleState);
+                currentSword = null;
+            }
+        };
+
+        onExit = () =>
+        {
+            
+        };
+
+    }
+
+
     // private void State(ref Action onEnter, ref Action onExecute, ref Action onExit)
     // {
     //     onEnter = () =>
@@ -490,6 +542,10 @@ public class Player : Character
     //     onExecute = () =>
     //     {
                 
+    //     };
+    //     onExit = () =>
+    //     {
+
     //     };
     // }
 

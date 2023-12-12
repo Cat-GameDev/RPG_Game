@@ -18,7 +18,7 @@ public abstract class Character : GameUnit, IHit
 
     public float Damage { get => damage; }
 
-    protected bool isRight;
+    public bool isRight;
     [SerializeField] CharacterFX characterFX;
 
     [Header("Knockback info")]
@@ -92,7 +92,7 @@ public abstract class Character : GameUnit, IHit
         }
     }
 
-    protected Vector2 GetDirection(bool isRight)
+    public Vector2 GetDirection(bool isRight)
     {
         return isRight ? Vector2.right : Vector2.left;
     }

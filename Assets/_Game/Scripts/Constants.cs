@@ -12,12 +12,12 @@ public static class Constants
     public const string ANIM_WALLSILDE = "wallsilde";
     public const string ANIM_ATTACK = "attack";
     public const string ANIM_DIE = "die";
-    public const string ANIM_AIMSWORD = "aimSword";
-    public const string ANIM_THROWSWORD= "throwSword";
+    public const string ANIM_THROW_ATTACK = "throw";
     public const string ANIM_REACT = "react";
     public const string ANIM_STUN = "stun";
     public const string ANIM_COUNTER_ATTACK = "counterAttack";
     public const string ANIM_SUCCESSFUL_COUNTER_ATTACK = "succesfulCounterAttack";
+    public const string ANIM_CATCH = "catch";
     public const string ENEMY_WALL = "EnemyWall";
     public const string PLAYER_TAG = "Player";
 }

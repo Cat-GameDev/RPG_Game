@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 848196035791957055}
   - component: {fileID: -5459843739877591452}
   m_Layer: 0
-  m_Name: 'Clone '
+  m_Name: Clone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
