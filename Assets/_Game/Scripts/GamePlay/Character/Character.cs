@@ -18,13 +18,9 @@ public abstract class Character : GameUnit, IHit
 
     public float Damage { get => damage; }
 
-    public bool isRight;
+    protected bool isRight;
     [SerializeField] CharacterFX characterFX;
 
-    [Header("Knockback info")]
-    [SerializeField] protected Vector2 knockbackDir;
-    [SerializeField] protected float knockbackDuration;
-    protected bool isKnockback;
 
     public virtual void OnInit()
     {
@@ -32,16 +28,15 @@ public abstract class Character : GameUnit, IHit
         stateMachine.ChangeState(IdleState);
         DeActiveAttack();
         isRight = true;
-        isKnockback = false;
+        
     }
 
-    public void OnHit(float damage)
+    public virtual void OnHit(float damage)
     {
         if(!IsDead)
         {
             hp -= damage;
             characterFX.StartCoroutine(nameof(characterFX.FlashFX));
-            StartCoroutine(HitKnockback());
             if(IsDead)
             {
                 OnDeath();
@@ -97,17 +92,7 @@ public abstract class Character : GameUnit, IHit
         return isRight ? Vector2.right : Vector2.left;
     }
 
-    protected IEnumerator HitKnockback()
-    {
-        isKnockback = true;
-        rb.velocity = new Vector2(knockbackDir.x * -GetDirection(isRight).x, knockbackDir.y);
-
-        yield return new WaitForSeconds(knockbackDuration);
-
-        isKnockback = false;
-    }
-
-    protected virtual void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit) {}
+    public virtual void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit) {}
 
 
 

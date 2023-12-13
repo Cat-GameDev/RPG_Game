@@ -20,4 +20,11 @@ public static class Constants
     public const string ANIM_CATCH = "catch";
     public const string ENEMY_WALL = "EnemyWall";
     public const string PLAYER_TAG = "Player";
+    public const string ANIM_FLIP = "flip";
+
+
+
+
+
+
 }

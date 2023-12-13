@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using System.Collections;
 
 public abstract class Enemy : Character
 {
@@ -18,12 +19,27 @@ public abstract class Enemy : Character
     [SerializeField] protected Vector2 stunDirection;
     protected bool canBeStuned;
 
+    [Header("Knockback info")]
+    [SerializeField] protected Vector2 knockbackDir;
+    [SerializeField] protected float knockbackDuration;
+    protected bool isKnockback;
+
     public override void OnInit()
     {
         base.OnInit();
         defaultSpeed = moveSpeed;
         stateTimer = 0;
-        canBeStuned = false;
+        canBeStuned = isKnockback = false;
+    }
+
+    public override void OnHit(float damage)
+    {
+        if(!IsDead)
+        {
+            StartCoroutine(HitKnockback());
+        }
+
+        base.OnHit(damage);
     }
 
     public void Moving()
@@ -42,6 +58,45 @@ public abstract class Enemy : Character
     {
         ChangeAnim(Constants.ANIM_ATTACK);
     }
+
+    private void FreezeTime(bool timeFrozen)
+    {
+        if(timeFrozen)
+        {
+            moveSpeed = 0;
+            anim.speed = 0;
+        }
+        else 
+        {
+            moveSpeed = defaultSpeed;
+            anim.speed = 1;
+        }
+    }
+
+    private IEnumerator FreezeTime(float freezeTime)
+    {
+        FreezeTime(true);
+
+        yield return new WaitForSeconds(freezeTime);
+
+        FreezeTime(false);
+    }
+
+    public void StartFreezeTimeCoroutine(float freezeTime)
+    {
+        StartCoroutine(FreezeTime(freezeTime));
+    }
+
+    protected IEnumerator HitKnockback()
+    {
+        isKnockback = true;
+        rb.velocity = new Vector2(knockbackDir.x * -GetDirection(isRight).x, knockbackDir.y);
+
+        yield return new WaitForSeconds(knockbackDuration);
+
+        isKnockback = false;
+    }
+
 
     // private bool IsTargetInRange()
     // {   
@@ -122,7 +177,7 @@ public abstract class Enemy : Character
         moveSpeed = defaultSpeed;
     }
 
-    protected override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
         float randomTime = 0;
         onEnter = () =>

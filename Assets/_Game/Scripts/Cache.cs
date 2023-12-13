@@ -28,6 +28,8 @@ public static class Cache
         return characters[collider];
     }
 
+    //Character playerCharacter = Cache.GetCharacter(other);
+
     private static Dictionary<Collider2D, Enemy> enemies = new Dictionary<Collider2D, Enemy>();
 
     public static Enemy GetEnemy(Collider2D collider)

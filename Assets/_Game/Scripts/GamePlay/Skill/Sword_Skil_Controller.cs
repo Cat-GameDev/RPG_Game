@@ -1,6 +1,10 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using System;
+using UnityEditor.PackageManager;
 
 public class Sword_Skil_Controller : GameUnit
 {
@@ -14,6 +18,25 @@ public class Sword_Skil_Controller : GameUnit
     bool isReturning;
     public float maxSpeed = 10f;
 
+    //Bounce
+    bool isBouncing;
+    float bounceAmount, bounceSpeed;
+    List<Enemy> enemyTargets = new List<Enemy>();
+    int targetIndex;
+
+    //Pierce
+    float pierceAmount;
+
+    //Spin
+    float maxDistance, spinDuration, spinTimer;
+    bool wasStopped;
+    bool isSpining;
+
+    float hitTimer, hitCooldown;
+    float freezeTime;
+    
+
+
     void Start()
     {
         player = LevelManager.Instance.Player;
@@ -21,26 +44,19 @@ public class Sword_Skil_Controller : GameUnit
 
     void Update()
     {
-        if(isReturning)
+        if (isReturning)
         {
-            TF.position = Vector2.Lerp(TF.position, player.TF.position, returnSpeed * Time.deltaTime);
-            ChangeAnim("flip");
-            if (Vector2.Distance(TF.position, player.TF.position) < 2f)
-            {
-                returnSpeed = returnSpeed + maxSpeed;
-            }
-
-            if (Vector2.Distance(TF.position, player.TF.position) < 1.5f)
-            {
-                ChangeAnim(Constants.ANIM_IDLE);
-            }
-
-            if(Vector2.Distance(TF.position, player.TF.position) < 1.1f)
-            {
-                player.CatchTheSword();
-                OnDespawn();
-                isReturning = false;
-            }
+            Return();
+        }
+        
+        if (isBouncing && enemyTargets.Count > 0)
+        {
+            Bounce();
+        }
+        
+        if(isSpining)
+        {
+            Spin();
         }
 
     }
@@ -48,17 +64,146 @@ public class Sword_Skil_Controller : GameUnit
     public void OnInit()
     {
         TF.parent = null;
+        
         circleCollider2D.enabled = true;
         rb.isKinematic = false;
         rb.constraints = RigidbodyConstraints2D.None;
-        isReturning = false;
+        isReturning = isBouncing = isSpining = wasStopped = false;
+
+        
+        targetIndex = 0;
+        enemyTargets.Clear();
+        Invoke(nameof(AutoReturn), 6f);
+    }
+
+    public void AutoReturn()
+    {
+        circleCollider2D.enabled = false;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        ReturnSword();
+    }
+
+    private void Spin()
+    {
+        if(Vector2.Distance(player.TF.position, TF.position) > maxDistance && !wasStopped)
+        {
+            StopWhenSpining();
+        }
+
+        if (wasStopped)
+        {
+            spinTimer -= Time.deltaTime;
+
+            if(spinTimer < 0)
+            {
+                isReturning = true;
+                isSpining = false;
+            }
+
+            hitTimer -= Time.deltaTime;
+
+            if(hitTimer < 0)
+            {
+                hitTimer = hitCooldown;
+                
+                Collider2D[] colliders = Physics2D.OverlapCircleAll(TF.position, 1f);
+
+                foreach (Collider2D hit in colliders)
+                {
+                    Enemy hitEnemy = Cache.GetEnemy(hit);
+                    if (hitEnemy)
+                    {
+                        hitEnemy.OnHit(player.Damage);
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    private void StopWhenSpining()
+    {
+        ChangeAnim(Constants.ANIM_FLIP);
+        wasStopped = true;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        spinTimer = spinDuration;
+    }
+
+    private void Return()
+    {
+        ChangeAnim(Constants.ANIM_FLIP);
+        TF.position = Vector2.Lerp(TF.position, player.TF.position, returnSpeed * Time.deltaTime);
+
+        if (Vector2.Distance(TF.position, player.TF.position) < 2f)
+        {
+            returnSpeed = returnSpeed + maxSpeed;
+        }
+
+        if (Vector2.Distance(TF.position, player.TF.position) < 1.5f)
+        {
+            ChangeAnim(Constants.ANIM_IDLE);
+        }
+
+        if (Vector2.Distance(TF.position, player.TF.position) < 1.1f)
+        {
+            player.CatchTheSword();
+            OnDespawn();
+            isReturning = false;
+        }
+    }
+
+    private void Bounce()
+    {
+        ChangeAnim(Constants.ANIM_FLIP);
+        TF.position = Vector2.MoveTowards(TF.position, enemyTargets[targetIndex].TF.position, bounceSpeed * Time.deltaTime);
+        if (Vector2.Distance(TF.position, enemyTargets[targetIndex].TF.position) < 0.1f)
+        {
+            enemyTargets[targetIndex].OnHit(player.Damage);
+            targetIndex++;
+            bounceAmount--;
+
+            if (bounceAmount < 0)
+            {
+                isBouncing = false;
+                isReturning = true;
+            }
+
+            if (targetIndex >= enemyTargets.Count)
+            {
+                targetIndex = 0;
+            }
+        }
+        
     }
 
 
-    public void SetupSword(float throwSpeed, float returnSpeed)
+    public void SetupSpin(bool isSpining,float maxDistance,float spinDuration, float hitCooldown)
+    {
+        this.isSpining = isSpining;
+        this.maxDistance = maxDistance;
+        this.spinDuration = spinDuration;
+        this.hitCooldown = hitCooldown;
+    }
+
+    public void SetupPierce(float pierceAmount)
+    {
+        this.pierceAmount = pierceAmount;
+    }
+
+    public void SetUpBounce(bool isBouncing, float bounceSpeed, float bounceAmount)
+    {
+        this.isBouncing = isBouncing;
+        this.bounceSpeed = bounceSpeed;
+        this.bounceAmount = bounceAmount;
+    }
+
+
+    public void SetupSword(float throwSpeed, float returnSpeed, float freezeTime)
     {
         rb.velocity = transform.right * throwSpeed;
         this.returnSpeed = returnSpeed;
+        this.freezeTime = freezeTime;
     }
 
     
@@ -77,17 +222,74 @@ public class Sword_Skil_Controller : GameUnit
         rb.isKinematic = false;
         isReturning = true;
         TF.parent = null;
+        circleCollider2D.enabled = true;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Enemy enemy = Cache.GetEnemy(other);
 
-        
+        if (enemy)
+        {
+            enemy.OnHit(player.Damage);
+            enemy.StartFreezeTimeCoroutine(freezeTime);
+            GetBounceTarget();
+        }
+
+        if (isReturning)
+        {
+            return;
+        }
+           
+
+        if(isSpining)
+        {
+            StopWhenSpining();
+            return;
+        }
+
+
+
+
+        if (pierceAmount > 0 && enemy)
+        {
+            pierceAmount--;
+            return;
+        }
+
+        SwordStuck(other);
+    }
+
+    private void GetBounceTarget()
+    {
+        if (isBouncing && enemyTargets.Count <= 0)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(TF.position, 10f);
+
+            // var : tự động gắn biến cho nó đúng
+            foreach (Collider2D hit in colliders)
+            {
+                Enemy hitEnemy = Cache.GetEnemy(hit);
+                if (hitEnemy)
+                {
+                    enemyTargets.Add(hitEnemy);
+                }
+
+            }
+        }
+    }
+
+    private void SwordStuck(Collider2D other)
+    {
+
         circleCollider2D.enabled = false;
 
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
+        if(isBouncing && enemyTargets.Count > 0)
+            return;
+        
         TF.parent = other.transform;
         Invoke(nameof(ReturnSword), TIME_RETURN_SWORD);
     }

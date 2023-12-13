@@ -15,10 +15,6 @@ public class Player : Character
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundCheckDis;
 
-    [Header("Dash")]
-    [SerializeField] float dashDistance;
-    [SerializeField] float dashDuration;
-
     [Header("Wall Check")]
     [SerializeField] Transform wallCheck;
     [SerializeField] Vector2 wallCheckSize;
@@ -162,7 +158,7 @@ public class Player : Character
     public void Attack()
     {
 
-        if(!isDashing && !isJumping && !(rb.velocity.y < 0) && !isAttacking && !isThrowAttack) 
+        if(!skill.Dash_Skill.CanUseSkill() && !isJumping && !(rb.velocity.y < 0) && !isAttacking && !isThrowAttack) 
         {
             stateMachine.ChangeState(PrimaryAttackState);
         }
@@ -199,7 +195,7 @@ public class Player : Character
 
     public void CatchOver() => isCatched = false;
 
-    private bool isWallDetected()
+    public bool isWallDetected()
     {
         RaycastHit2D hit = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, groundLayerMask);
 
@@ -234,7 +230,7 @@ public class Player : Character
         isThrowAttack = false;
     }
 
-    protected override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
         onEnter = () =>
         {
@@ -320,30 +316,37 @@ public class Player : Character
 
             ChangeAnim(Constants.ANIM_DASH);
             isDashing = true;
-            Vector2 dashDirection = GetDirection(isRight);
-            Vector2 targetPosition = (Vector2)TF.position + dashDirection * dashDistance;
+            
+            skill.Dash_Skill.DashSkill(this, stateMachine, isRight);
+            // Vector2 dashDirection = GetDirection(isRight);
+            // Vector2 targetPosition = (Vector2)TF.position + dashDirection * dashDistance;
 
-            Vector2 originalPosition = TF.position;
+            // Vector2 originalPosition = TF.position;
 
-            Tweener dashTween = null;
+            // Tweener dashTween = null;
 
-            dashTween = DOTween.To(() => (Vector2)TF.position, x => TF.position = x, targetPosition, dashDuration)
-                .SetEase(Ease.Linear)
-                .OnUpdate(() =>
-                {
-                    if (isWallDetected())
-                    {
-                        isDashing = false;
-                        dashTween.Kill(); 
-                        stateMachine.ChangeState(IdleState);
-                    }
-                })
-                .OnComplete(() =>
-                {
-                    isDashing = false;
-                    TF.position = targetPosition;
-                    stateMachine.ChangeState(IdleState);
-                });
+            // dashTween = DOTween.To(() => (Vector2)TF.position, x => TF.position = x, targetPosition, dashDuration)
+            //     .SetEase(Ease.Linear)
+            //     .OnUpdate(() =>
+            //     {
+            //         if (isWallDetected())
+            //         {
+            //             isDashing = false;
+            //             dashTween.Kill(); 
+            //             stateMachine.ChangeState(IdleState);
+            //         }
+            //     })
+            //     .OnComplete(() =>
+            //     {
+            //         isDashing = false;
+            //         TF.position = targetPosition;
+            //         stateMachine.ChangeState(IdleState);
+            //     });
+        };
+
+        onExit = () =>
+        {
+            isDashing = false;
         };
     }
 

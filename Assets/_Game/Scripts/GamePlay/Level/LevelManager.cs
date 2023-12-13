@@ -11,6 +11,9 @@ public class LevelManager : Singleton<LevelManager>
     void Start()
     {
         player.OnInit();
-        enemies[0].OnInit();
+        foreach(var enemy in enemies)
+        {
+            enemy.OnInit();
+        }
     }
 }
