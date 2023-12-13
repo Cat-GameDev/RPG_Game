@@ -147,6 +147,8 @@ public enum PoolType
     Enemy_Skeleton,
     Clone_Skill,
     Sword,
+    Blackhole,
+    UITickText,
 }
 
 

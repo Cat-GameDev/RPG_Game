@@ -32,6 +32,9 @@ public abstract class Enemy : Character
         canBeStuned = isKnockback = false;
     }
 
+    public abstract Vector3 GetPositionOnHead();
+    public abstract Vector3 GetSize();
+
     public override void OnHit(float damage)
     {
         if(!IsDead)
@@ -59,7 +62,7 @@ public abstract class Enemy : Character
         ChangeAnim(Constants.ANIM_ATTACK);
     }
 
-    private void FreezeTime(bool timeFrozen)
+    public void FreezeTime(bool timeFrozen)
     {
         if(timeFrozen)
         {

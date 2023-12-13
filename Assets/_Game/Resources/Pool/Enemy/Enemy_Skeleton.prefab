@@ -326,16 +326,16 @@ MonoBehaviour:
   damage: 1
   attackArea: {fileID: 3631091543362153852}
   hp: 0
-  isRight: 0
   characterFX: {fileID: 8293025254171387556}
-  knockbackDir: {x: 0.2, y: 4}
-  knockbackDuration: 0.07
   attackRange: 1.5
   maxSpeed: 5
   minDistanceToAttack: 0.8
   fx: {fileID: 8293025254171387556}
   stunDuration: 0.75
   stunDirection: {x: 0.5, y: 4}
+  knockbackDir: {x: 0.2, y: 4}
+  knockbackDuration: 0.07
+  capsuleCollider2D: {fileID: 4264873761619770501}
 --- !u!114 &8293025254171387556
 MonoBehaviour:
   m_ObjectHideFlags: 0
