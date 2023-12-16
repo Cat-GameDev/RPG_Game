@@ -11,11 +11,23 @@ public class Enemy_Skeleton : Enemy
             return;
 
         stateMachine?.Execute();
+        Debug.Log(stateMachine.name);
+    }
+
+    public override void OnInit()
+    {
+        base.OnInit();
+        offset = new Vector3(1.7f,.23f,0f);
     }
 
     public override Vector3 GetPositionOnHead()
     {
         return TF.position + new Vector3(0f, 1.5f, 0f);
+    }
+
+    public override Vector3 GetOffset()
+    {
+        return offset;
     }
 
     public override Vector3 GetSize()

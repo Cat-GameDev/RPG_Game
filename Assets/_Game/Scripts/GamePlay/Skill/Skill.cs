@@ -20,7 +20,7 @@ public class Skill : MonoBehaviour
     {
         if(cooldownTimer < 0)
         {
-            UseSkill();
+            //UseSkill();
             cooldownTimer = cooldown;
             return true;
         }

@@ -18,6 +18,7 @@ public static class Constants
     public const string ANIM_COUNTER_ATTACK = "counterAttack";
     public const string ANIM_SUCCESSFUL_COUNTER_ATTACK = "succesfulCounterAttack";
     public const string ANIM_CATCH = "catch";
+    public const string ANIM_FREEZE = "freeze";
     public const string ENEMY_WALL = "EnemyWall";
     public const string PLAYER_TAG = "Player";
     public const string ANIM_FLIP = "flip";

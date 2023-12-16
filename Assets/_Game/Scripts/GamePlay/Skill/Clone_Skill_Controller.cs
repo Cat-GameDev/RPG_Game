@@ -21,7 +21,7 @@ public class Clone_Skill_Controller : Character
         {
             sr.color = new Color(1,1,1, sr.color.a - (Time.deltaTime * cloneDuration));
 
-            if(sr.color.a < 0)
+            if(sr.color.a < 0.5)
             {
                 OnDespawn();
             }

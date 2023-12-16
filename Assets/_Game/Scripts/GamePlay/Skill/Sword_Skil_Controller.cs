@@ -232,7 +232,8 @@ public class Sword_Skil_Controller : GameUnit
         if (enemy)
         {
             enemy.OnHit(player.Damage);
-            enemy.StartFreezeTimeCoroutine(freezeTime);
+            //enemy.StartFreezeTimeCoroutine(freezeTime);
+            enemy.FreezeState();
             GetBounceTarget();
         }
 

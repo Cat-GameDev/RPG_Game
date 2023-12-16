@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class Blackhole_Skill_Controller : GameUnit
 {
-    public float maxSize;
-    public float growSpeed;
-    public bool canGrow;
+    float maxSize;
+    float growSpeed;
+    bool canGrow;
     public List<Enemy> targetEnemy = new List<Enemy>();
 
     public bool canAttack;
@@ -18,10 +18,14 @@ public class Blackhole_Skill_Controller : GameUnit
 
     void Update()
     {
-        cloneAttackTimer -= Time.deltaTime;
-        if(Input.GetKeyDown(KeyCode.I))
-            canAttack = true;
+        
+        if(!GameManager.Instance.IsState(GameState.UltimateSkill))
+        {
+            OnDespawn();
+        }
 
+    
+        cloneAttackTimer -= Time.deltaTime;
         if(canAttack && cloneAttackTimer < 0)
         {
             cloneAttackTimer = cloneAttackCooldown;
@@ -35,14 +39,27 @@ public class Blackhole_Skill_Controller : GameUnit
         }
     }
 
+    public void OnInit()
+    {
+        canGrow = true;
+        TF.localScale = Vector3.one;
+    }
+
+    public void Setup(float maxSize, float growSpeed)
+    {
+        this.maxSize = maxSize;
+        this.growSpeed = growSpeed;
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         Enemy enemy = Cache.GetEnemy(other);
         if(enemy)
         {
-            enemy.FreezeTime(true);
+            enemy.FreezeState();
             UITickText tickTextUI =  SimplePool.Spawn<UITickText>(PoolType.UITickText, enemy.TF.position, Quaternion.identity);
-            tickTextUI.SetupText(enemy.GetPositionOnHead(), enemy.GetSize());
+            tickTextUI.OnInit();
+            tickTextUI.SetupText(enemy.GetPositionOnHead(), enemy.GetSize(), enemy.GetOffset());
             targetEnemy.Add(enemy);
         }
     }

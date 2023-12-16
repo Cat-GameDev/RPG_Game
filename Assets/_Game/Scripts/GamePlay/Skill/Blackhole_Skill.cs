@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Blackhole_Skill : Skill
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] float maxSize;
+    [SerializeField] float growSpeed;
+    public override void UseSkill()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Blackhole_Skill_Controller blackhole_Skill_Controller = SimplePool.Spawn<Blackhole_Skill_Controller>(PoolType.Blackhole, player.TF.position, player.TF.rotation);
+        blackhole_Skill_Controller.Setup(maxSize, growSpeed);
+        blackhole_Skill_Controller.OnInit();
     }
 }
