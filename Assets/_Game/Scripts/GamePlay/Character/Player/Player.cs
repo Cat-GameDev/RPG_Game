@@ -553,7 +553,6 @@ public class Player : Character
     {
         float timeFly = .5f;
         float yPostion;
-        float timeAir = 6f;
         onEnter = () =>
         {   
             GameManager.Instance.ChangeState(GameState.UltimateSkill);
@@ -572,7 +571,7 @@ public class Player : Character
                     
 
                     // Fall tween
-                    transform.DOMoveY(transform.position.y - .5f, timeAir)
+                    transform.DOMoveY(transform.position.y - .5f, Constants.TIME_ULTIMATE_SKILL)
                         .SetEase(Ease.InQuad)
                         .OnStart(() => 
                         {

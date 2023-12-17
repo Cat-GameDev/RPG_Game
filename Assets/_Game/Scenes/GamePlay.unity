@@ -618,6 +618,7 @@ MonoBehaviour:
   cooldown: 0
   maxSize: 15
   growSpeed: 1.25
+  attackAmount: 6
 --- !u!1 &716766459
 GameObject:
   m_ObjectHideFlags: 0

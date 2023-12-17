@@ -35,8 +35,7 @@ public abstract class Enemy : Character
     }
 
     public abstract Vector3 GetPositionOnHead();
-    public abstract Vector3 GetSize();
-    public abstract Vector3 GetOffset();
+    public abstract Vector3 GetOffset(bool isRight);
 
     public override void OnHit(float damage)
     {

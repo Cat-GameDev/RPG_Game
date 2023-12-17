@@ -7,34 +7,37 @@ using UnityEngine;
 public class UITickText : GameUnit
 {
     [SerializeField] TextMeshProUGUI text;
-    [SerializeField] RectTransform rectTransform;
-    Vector3 offset;
+    Blackhole_Skill_Controller blackhole_Skill_Controller;
+    //Vector3 offset;
 
-    public void OnInit()
+    void Update()
     {
-        Invoke(nameof(OnDespawn), 3f);
+        if(blackhole_Skill_Controller != null && blackhole_Skill_Controller.CanAttack)
+        {
+            OnDespawn();
+        }
     }
 
-    internal void SetupText(Vector3 textTransform, Vector2 sizeUI, Vector3 offset)
+    internal void SetupText(Vector3 textTransform, Blackhole_Skill_Controller blackhole_Skill_Controller)
     {
         text.transform.position = textTransform;
-        rectTransform.sizeDelta = sizeUI;
-        this.offset = offset;
+        this.blackhole_Skill_Controller = blackhole_Skill_Controller;
+        //SeftDespawn();
     }
 
-    public void UseSkill()
+    private void SeftDespawn()
     {
-        Invoke(nameof(CreateCloneRight), 2f);
-        Invoke(nameof(CreateCloneLeft), 2.3f);
+        Invoke(nameof(OnDespawn), 2f);
     }
 
-    private void CreateCloneLeft()
-    {
-        SkillManager.Instance.Clone_Skill.CreateClone(TF.position + offset, false, true, 10f);
-    }
 
-    private void CreateCloneRight()
-    {
-        SkillManager.Instance.Clone_Skill.CreateClone(TF.position + new Vector3(-offset.x, offset.y,0), true, true, 10f);
-    }
+    // private void CreateCloneLeft()
+    // {
+    //     SkillManager.Instance.Clone_Skill.CreateClone(TF.position + offset, false, true, 10f);
+    // }
+
+    // private void CreateCloneRight()
+    // {
+    //     SkillManager.Instance.Clone_Skill.CreateClone(TF.position + new Vector3(-offset.x, offset.y,0), true, true, 10f);
+    // }
 }

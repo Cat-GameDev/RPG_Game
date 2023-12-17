@@ -4,7 +4,6 @@ using Random = UnityEngine.Random;
 
 public class Enemy_Skeleton : Enemy
 {
-    [SerializeField] CapsuleCollider2D capsuleCollider2D;
     void Update()
     {
         if(isKnockback)
@@ -25,14 +24,12 @@ public class Enemy_Skeleton : Enemy
         return TF.position + new Vector3(0f, 1.5f, 0f);
     }
 
-    public override Vector3 GetOffset()
+    public override Vector3 GetOffset(bool isRight)
     {
-        return offset;
-    }
-
-    public override Vector3 GetSize()
-    {
-        return capsuleCollider2D.size;
+        if(isRight)
+            return TF.position + new Vector3(-offset.x, offset.y,0);
+        
+        return TF.position  + offset;
     }
 
     public override void StopMoving()
