@@ -42,7 +42,7 @@ public class Player : Character
     bool isThrowAttack;
     bool isCatched;
     Sword_Skil_Controller currentSword;
-
+    Quaternion throwAttackRotation;
 
     void Start()
     {
@@ -51,7 +51,7 @@ public class Player : Character
 
     void Update()
     {
-        if(IsDead)
+        if(IsDead || !GameManager.Instance.IsState(GameState.Gameplay))
             return;
         
         comboTimeWidow -= Time.deltaTime;
@@ -104,6 +104,11 @@ public class Player : Character
         {
             ThrowAttack();
         }
+
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            UltimateAttack();
+        }
     }
 
     public override void OnInit()
@@ -114,6 +119,14 @@ public class Player : Character
         currentSword = null;
     }
 
+    #region Ability Fuction
+    public void UltimateAttack()
+    {
+        if(skill.Blackhole_Skill.CanUseSkill() && rb.velocity.y == 0)
+        {
+            stateMachine.ChangeState(UltimateAttackState);
+        }
+    }
 
     private void Moving()
     {
@@ -163,7 +176,16 @@ public class Player : Character
             stateMachine.ChangeState(PrimaryAttackState);
         }
     }
+    public override void AttackOver()
+    {
+        base.AttackOver();
+        isAttacking = false;
+        isSuccessfulCounterAttack = false;
+        comboCounter++;
 
+        if(comboCounter > ATTACK_COMBO)
+            comboCounter = 0;
+    }
     public void CounterAttack()
     {
         if(isThrowAttack)
@@ -185,16 +207,15 @@ public class Player : Character
         }
     }
 
-    public void SetCurrentSword(Sword_Skil_Controller sword_Skil_Controller) => currentSword = sword_Skil_Controller;
-
+    public void ThrowAttackOver() => isThrowAttack = false;
     public void CatchTheSword()
     {
         stateMachine.ChangeState(CatchState);
     }
 
-
+    #endregion
     public void CatchOver() => isCatched = false;
-
+    public void SetCurrentSword(Sword_Skil_Controller sword_Skil_Controller) => currentSword = sword_Skil_Controller;
     public bool isWallDetected()
     {
         RaycastHit2D hit = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, groundLayerMask);
@@ -208,28 +229,23 @@ public class Player : Character
         }
         return false;
     }
-    private bool IsGrounded() => Physics2D.Raycast(TF.position, Vector2.down, groundCheckDis, groundLayerMask);
-
-    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack)
+    private bool IsGrounded()
     {
-        this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
-    }
+        RaycastHit2D hit = Physics2D.Raycast(TF.position, Vector2.down, groundCheckDis, groundLayerMask);
+        if (hit.collider != null)
+        {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                return true;
+            }
+        }
+        return false;
+    } 
+    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack) => this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
 
-    public override void AttackOver()
-    {
-        base.AttackOver();
-        isAttacking = false;
-        isSuccessfulCounterAttack = false;
-        comboCounter++;
 
-        if(comboCounter > ATTACK_COMBO)
-            comboCounter = 0;
-    }
-    public void ThrowAttackOver()
-    {
-        isThrowAttack = false;
-    }
 
+    #region StateMachine
     public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
         onEnter = () =>
@@ -476,8 +492,7 @@ public class Player : Character
         };
     }
 
-    private Quaternion throwAttackRotation;
-     private void ThrowAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    private void ThrowAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
         onEnter = () =>
         {   
@@ -534,6 +549,55 @@ public class Player : Character
 
     }
 
+    private void UltimateAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
+        float timeFly = .5f;
+        float yPostion;
+        onEnter = () =>
+        {   
+            GameManager.Instance.ChangeState(GameState.UltimateSkill);
+            rb.gravityScale = 0;
+            yPostion = transform.position.y;
+            stateTimer = timeFly;
+            ChangeAnim(Constants.ANIM_JUMP);
+
+            // Use DOTween to tween the position
+            transform.DOMoveY(transform.position.y + 5f, timeFly)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    //TODO: create blackhole
+                    skill.Blackhole_Skill.UseSkill();
+                    
+
+                    // Fall tween
+                    transform.DOMoveY(transform.position.y - .5f, Constants.TIME_ULTIMATE_SKILL)
+                        .SetEase(Ease.InQuad)
+                        .OnStart(() => 
+                        {
+                            //ChangeAnim(Constants.ANIM_FALL);
+                            stateMachine.ChangeState(FallState);
+                        })
+                        .OnComplete(() => 
+                        {
+                            transform.DOMoveY(yPostion, 0.3f);
+                            rb.gravityScale = 3;
+                            GameManager.Instance.ChangeState(GameState.Gameplay);
+                        });
+                });
+        };
+
+        onExecute = () =>
+        {
+
+        };
+        onExit = () =>
+        {
+            
+        };
+    }
+
+    #endregion
 
     // private void State(ref Action onEnter, ref Action onExecute, ref Action onExit)
     // {

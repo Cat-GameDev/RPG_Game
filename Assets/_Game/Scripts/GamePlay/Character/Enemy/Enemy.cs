@@ -22,7 +22,9 @@ public abstract class Enemy : Character
     [Header("Knockback info")]
     [SerializeField] protected Vector2 knockbackDir;
     [SerializeField] protected float knockbackDuration;
+    protected Vector3 offset;
     protected bool isKnockback;
+    protected bool isFreeze;
 
     public override void OnInit()
     {
@@ -31,6 +33,9 @@ public abstract class Enemy : Character
         stateTimer = 0;
         canBeStuned = isKnockback = false;
     }
+
+    public abstract Vector3 GetPositionOnHead();
+    public abstract Vector3 GetOffset(bool isRight);
 
     public override void OnHit(float damage)
     {
@@ -59,32 +64,9 @@ public abstract class Enemy : Character
         ChangeAnim(Constants.ANIM_ATTACK);
     }
 
-    private void FreezeTime(bool timeFrozen)
+    public void FreezeState()
     {
-        if(timeFrozen)
-        {
-            moveSpeed = 0;
-            anim.speed = 0;
-        }
-        else 
-        {
-            moveSpeed = defaultSpeed;
-            anim.speed = 1;
-        }
-    }
-
-    private IEnumerator FreezeTime(float freezeTime)
-    {
-        FreezeTime(true);
-
-        yield return new WaitForSeconds(freezeTime);
-
-        FreezeTime(false);
-    }
-
-    public void StartFreezeTimeCoroutine(float freezeTime)
-    {
-        StartCoroutine(FreezeTime(freezeTime));
+        stateMachine.ChangeState(FreezeState);
     }
 
     protected IEnumerator HitKnockback()
@@ -141,6 +123,7 @@ public abstract class Enemy : Character
     internal void SetTarget(Character character)
     {
         this.target = character;
+
         if(IsTargetInRange())
         {
             stateMachine.ChangeState(AttackState);
@@ -190,6 +173,9 @@ public abstract class Enemy : Character
         onExecute = () =>
         {
             stateTimer += Time.deltaTime;
+            if(isFreeze)
+                return;
+
             if(stateTimer > randomTime)
                 stateMachine.ChangeState(PatrolState);
         };
@@ -276,6 +262,28 @@ public abstract class Enemy : Character
             fx.CanelRedBlink();
         };
     }
+
+    protected virtual void FreezeState(ref Action onEnter, ref Action onExecute, ref Action onExit)
+    {
+        onEnter = () =>
+        {
+            rb.velocity = Vector2.zero;
+            isFreeze = true;
+            ChangeAnim(Constants.ANIM_FREEZE);
+        };
+
+        onExecute = () =>
+        {
+            if(GameManager.Instance.IsState(GameState.Gameplay))
+            {
+                stateMachine.ChangeState(IdleState);
+                isFreeze = false;
+            }
+        };
+
+    }
+
+
     protected void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag(Constants.ENEMY_WALL))

@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 5377326351623407072}
   - component: {fileID: 848196035791957055}
   - component: {fileID: -5459843739877591452}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Clone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,8 +146,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1428628059
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 6448d7daf100be542b66647e0c39eafc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -201,6 +201,4 @@ MonoBehaviour:
   attackArea: {fileID: 6017072427102345358}
   hp: 0
   characterFX: {fileID: 0}
-  knockbackDir: {x: 0, y: 0}
-  knockbackDuration: 0
   sr: {fileID: 5377326351623407072}
