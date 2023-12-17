@@ -9,7 +9,7 @@ public class Blackhole_Skill_Controller : GameUnit
     public const float ACTIVE_ATTACK = 3f;
     float maxSize;
     float growSpeed;
-    public List<Enemy> targetEnemy = new List<Enemy>();
+    List<Enemy> targetEnemy = new List<Enemy>();
 
     bool canAttack;
     int attackAmount;
