@@ -149,6 +149,7 @@ public enum PoolType
     Sword,
     Blackhole,
     UITickText,
+    Crystal,
 }
 
 

@@ -22,6 +22,7 @@ public static class Constants
     public const string ENEMY_WALL = "EnemyWall";
     public const string PLAYER_TAG = "Player";
     public const string ANIM_FLIP = "flip";
+    public const string ANIM_EXPLODE = "explode";
     public const float TIME_ULTIMATE_SKILL = 6f;
 
 

@@ -513,6 +513,7 @@ GameObject:
   - component: {fileID: 600360871}
   - component: {fileID: 600360872}
   - component: {fileID: 600360873}
+  - component: {fileID: 600360874}
   m_Layer: 0
   m_Name: Skill Manager
   m_TagString: Untagged
@@ -566,6 +567,7 @@ MonoBehaviour:
   clone_Skill: {fileID: 600360871}
   sword_Skill: {fileID: 600360872}
   blackhole_Skill: {fileID: 600360873}
+  crystal_Skill: {fileID: 600360874}
 --- !u!114 &600360871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,6 +621,23 @@ MonoBehaviour:
   maxSize: 15
   growSpeed: 1.25
   attackAmount: 6
+--- !u!114 &600360874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600360867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18c0472ecad9ed3439cff55bb51933ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 2
+  crystalDuration: 2
+  moveSpeed: 10
+  canMultiCrystal: 0
+  canMove: 0
 --- !u!1 &716766459
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,6 +929,10 @@ MonoBehaviour:
     collect: 0
   - root: {fileID: 560555019}
     prefab: {fileID: 7374691084227983214, guid: be964a22463926c46b9d96aeee296e86, type: 3}
+    amount: 1
+    collect: 0
+  - root: {fileID: 1239967972}
+    prefab: {fileID: 714684236641164392, guid: 30f3170f02fb3514fad5f43bcefa94cc, type: 3}
     amount: 1
     collect: 0
   Particle: []

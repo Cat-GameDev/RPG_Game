@@ -109,6 +109,14 @@ public class Player : Character
         {
             UltimateAttack();
         }
+
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            if(skill.Crystal_Skill.CanUseSkill())
+            {
+                skill.Crystal_Skill.UseSkill();
+            }
+        }
     }
 
     public override void OnInit()
