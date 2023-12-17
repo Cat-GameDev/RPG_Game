@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 0
-  cloneDuration: 0.3
+  cloneDuration: 0.9
 --- !u!114 &600360872
 MonoBehaviour:
   m_ObjectHideFlags: 0

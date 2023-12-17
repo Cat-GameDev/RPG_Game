@@ -11,7 +11,7 @@ public class Enemy_Skeleton : Enemy
             return;
 
         stateMachine?.Execute();
-        Debug.Log(stateMachine.name);
+        //Debug.Log(stateMachine.name);
     }
 
     public override void OnInit()

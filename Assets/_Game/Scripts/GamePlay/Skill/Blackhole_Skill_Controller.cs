@@ -51,6 +51,8 @@ public class Blackhole_Skill_Controller : GameUnit
         this.growSpeed = growSpeed;
     }
 
+    
+
     void OnTriggerEnter2D(Collider2D other)
     {
         Enemy enemy = Cache.GetEnemy(other);
