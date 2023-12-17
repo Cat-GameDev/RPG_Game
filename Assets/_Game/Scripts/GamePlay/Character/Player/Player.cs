@@ -243,8 +243,6 @@ public class Player : Character
     } 
     public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack) => this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
 
-
-
     #region StateMachine
     public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
     {
