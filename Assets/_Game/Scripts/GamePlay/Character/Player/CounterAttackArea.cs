@@ -30,7 +30,7 @@ public class CounterAttackArea : MonoBehaviour
     {
         if (currentEnemy != null)
         {
-            player.SetIsSuccessfulCounterAttack(currentEnemy.CanBeStunned());
+            player.SetIsSuccessfulCounterAttack(currentEnemy.CanBeStunned(), currentEnemy);
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Blackhole_Skill_Controller : GameUnit
 {
     public const float ATTACK_DELAY = 0.2f;
-    public const float ACTIVE_ATTACK = 3f;
+    public const float ACTIVE_ATTACK = 1.5f;
     float maxSize;
     float growSpeed;
     public List<Enemy> targetEnemy = new List<Enemy>();
@@ -22,7 +22,13 @@ public class Blackhole_Skill_Controller : GameUnit
         
         if (canAttack && attackAmount > 0 && !isAttacking)
         {
-            StartCoroutine(AttackWithDelay());
+            // if(SkillManager.Instance.Clone_Skill.CrystalInsteadOfClone)
+            // {
+            //     // attack no delay
+                
+            // }
+            // else
+                StartCoroutine(AttackWithDelay());
         }
 
 
@@ -57,15 +63,28 @@ public class Blackhole_Skill_Controller : GameUnit
         int random = Random.Range(0, targetEnemy.Count);
         CreateCloneLeft(targetEnemy[random]);
 
+        // foreach (Enemy enemy in targetEnemy)
+        // {
+        //     CreateCloneLeft(enemy);
+            
+        // }
+
         yield return new WaitForSeconds(ATTACK_DELAY);
         
         CreateCloneRight(targetEnemy[random]);
+
+        // foreach (Enemy enemy in targetEnemy)
+        // {
+        //     CreateCloneLeft(enemy);
+        // }
 
         attackAmount--;
 
         yield return new WaitForSeconds(ATTACK_DELAY);
         isAttacking = false;
     }
+
+
 
     private void ActiveAttack() => canAttack = true;
     

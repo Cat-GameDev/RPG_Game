@@ -32,7 +32,8 @@ public class Clone_Skill_Controller : Character
     {
         if(canAttack)
         {
-            anim.SetInteger("attack", Random.Range(1,3));
+            int random = Random.Range(1, 4);
+            anim.SetInteger(Constants.ANIM_ATTACK, random);
         }
         this.damage = damage;
         TF.position = position;

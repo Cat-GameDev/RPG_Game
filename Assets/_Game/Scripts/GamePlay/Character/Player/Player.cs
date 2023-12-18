@@ -9,6 +9,7 @@ public class Player : Character
     public const float TIME_RESET_ATTACK = 2f;
     public const float MOVE_ATTACK = 0.1f;
     public const float COUNTER_ATTACK_DURATION = 0.2f;
+    public const float CLONE_COUNTER_ATTACK = 0.4f;
 
     [SerializeField] FixedJoystick joystickControl;
     [SerializeField] float jumpForce = 5f;
@@ -43,6 +44,9 @@ public class Player : Character
     bool isCatched;
     Sword_Skil_Controller currentSword;
     Quaternion throwAttackRotation;
+    Enemy enemy;
+
+    public bool CanAttack { get => canAttack;}
 
     void Start()
     {
@@ -249,7 +253,11 @@ public class Player : Character
         }
         return false;
     } 
-    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack) => this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
+    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack, Enemy enemy) 
+    {   
+        this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
+        this.enemy = enemy;
+    }
 
     #region StateMachine
     public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -334,12 +342,12 @@ public class Player : Character
     {
         onEnter = () =>
         {
-            skill.Clone_Skill.CreateClone(TF.position, isRight, canAttack, damage);
+            skill.Clone_Skill.CreateStartClone(TF.position, isRight, canAttack, damage);
 
             ChangeAnim(Constants.ANIM_DASH);
             isDashing = true;
             
-            skill.Dash_Skill.DashSkill(this, stateMachine, isRight);
+            skill.Dash_Skill.DashSkill(this, stateMachine, isRight, canAttack, Damage);
             // Vector2 dashDirection = GetDirection(isRight);
             // Vector2 targetPosition = (Vector2)TF.position + dashDirection * dashDistance;
 
@@ -487,6 +495,7 @@ public class Player : Character
         onEnter = () =>
         {   
             ChangeAnim(Constants.ANIM_SUCCESSFUL_COUNTER_ATTACK);
+            Invoke(nameof(InvokeCreateCloneCounterAttack), CLONE_COUNTER_ATTACK);
         };
 
         onExecute = () =>
@@ -496,6 +505,15 @@ public class Player : Character
                 stateMachine.ChangeState(IdleState);
             }
         };
+    }
+
+    private void InvokeCreateCloneCounterAttack()
+    {
+        skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(!isRight), !isRight, true, damage);
+        if(skill.Clone_Skill.CanDuplicateClone)
+        {
+            skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(isRight), isRight, true, damage);
+        }
     }
 
     private void ThrowAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)

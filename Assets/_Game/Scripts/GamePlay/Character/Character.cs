@@ -17,8 +17,10 @@ public abstract class Character : GameUnit, IHit
     public bool IsDead => hp <= 0;
 
     public float Damage { get => damage; }
-
     protected bool isRight;
+    public bool IsRight { get => isRight;}
+
+
     [SerializeField] CharacterFX characterFX;
 
 

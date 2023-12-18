@@ -510,8 +510,8 @@ GameObject:
   - component: {fileID: 600360868}
   - component: {fileID: 600360870}
   - component: {fileID: 600360869}
-  - component: {fileID: 600360871}
   - component: {fileID: 600360872}
+  - component: {fileID: 600360871}
   - component: {fileID: 600360873}
   - component: {fileID: 600360874}
   m_Layer: 0
@@ -582,6 +582,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 0
   cloneDuration: 0.9
+  canCreateStartCloneOnDash: 0
+  canCreateOverCloneOnDash: 0
+  canCreateCloneCounterAttack: 0
+  canDuplicateClone: 0
+  crystalInsteadOfClone: 1
 --- !u!114 &600360872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,11 +638,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c0472ecad9ed3439cff55bb51933ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldown: 2
-  crystalDuration: 2
+  cooldown: 1
+  crystalDuration: 5
   moveSpeed: 10
-  canMultiCrystal: 0
-  canMove: 0
+  CloneInsteadOfCrystal: 0
+  canMultiCrystal: 1
+  canMove: 1
+  canExplode: 1
 --- !u!1 &716766459
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,6 +689,10 @@ PrefabInstance:
     - target: {fileID: 4264873761619770500, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: m_Name
       value: Enemy_Skeleton (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264873761619770500, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4264873761619770503, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: m_RootOrder
@@ -739,6 +750,10 @@ PrefabInstance:
     - target: {fileID: 4264873761619770500, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: m_Name
       value: Enemy_Skeleton (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264873761619770500, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4264873761619770503, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: m_RootOrder
@@ -1197,6 +1212,10 @@ PrefabInstance:
     - target: {fileID: 726766858202884811, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.322
+      objectReference: {fileID: 0}
+    - target: {fileID: 726766858261879712, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
+      propertyPath: comboTime
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 726766858261879712, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: eventSystem
@@ -1764,6 +1783,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4264873761619770496, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
+      propertyPath: knockbackDir.x
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4264873761619770500, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: m_Name
       value: Enemy_Skeleton

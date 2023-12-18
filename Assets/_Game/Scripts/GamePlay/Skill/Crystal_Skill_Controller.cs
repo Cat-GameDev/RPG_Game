@@ -12,6 +12,7 @@ public class Crystal_Skill_Controller : GameUnit
     bool canMove;
     List<Enemy> enemies = new List<Enemy>();
     float moveSpeed;
+    bool crystalInsteadOfClone;
 
     void Update()
     {
