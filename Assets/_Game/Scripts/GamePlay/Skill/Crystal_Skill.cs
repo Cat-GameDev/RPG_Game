@@ -65,7 +65,7 @@ public class Crystal_Skill : Skill
     {
         crystal_Skill_Controller = SimplePool.Spawn<Crystal_Skill_Controller>
                                                     (PoolType.Crystal, player.TF.position, Quaternion.identity);
-        crystal_Skill_Controller.OnInit(moveSpeed, canMove, cloneInsteadOfCrystal);
+        crystal_Skill_Controller.OnInit(moveSpeed, canMove);
     }
 
     private void SelfDespawn()
@@ -92,7 +92,7 @@ public class Crystal_Skill : Skill
         for (int i = 0; i < 3; i++)
         {
             Crystal_Skill_Controller crystal_Skill = SimplePool.Spawn<Crystal_Skill_Controller>(PoolType.Crystal, player.TF.position, Quaternion.identity);
-            crystal_Skill.OnInit(moveSpeed, canMove, cloneInsteadOfCrystal);
+            crystal_Skill.OnInit(moveSpeed, canMove);
 
             yield return new WaitForSeconds(TIME_DELAY_CRYSTAL);
         }

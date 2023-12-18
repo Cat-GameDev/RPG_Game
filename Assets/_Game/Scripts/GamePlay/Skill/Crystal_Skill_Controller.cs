@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Crystal_Skill_Controller : GameUnit
 {
@@ -10,19 +11,40 @@ public class Crystal_Skill_Controller : GameUnit
     [SerializeField] CircleCollider2D circle;
     string currentAnim;
     bool canMove;
-    List<Enemy> enemies = new List<Enemy>();
+    public List<Enemy> enemies = new List<Enemy>();
     float moveSpeed;
-    bool crystalInsteadOfClone;
+    Enemy currentTarget;
 
     void Update()
     {
         if(canMove)
         {
-            TF.position = Vector2.MoveTowards(TF.position, ClosestTarget(), moveSpeed * Time.deltaTime);
-            if(Vector2.Distance(TF.position, ClosestTarget()) < 0.5f)
+            if (SkillManager.Instance.Clone_Skill.CrystalInsteadOfClone)
             {
-                Explode();
+                if (enemies.Count > 0)
+                {
+                    if (!currentTarget)
+                    {
+                        currentTarget = enemies[Random.Range(0, enemies.Count)];
+                    }
+                    TF.position = Vector2.MoveTowards(TF.position, currentTarget.transform.position, moveSpeed * Time.deltaTime);
+                    if (Vector2.Distance(TF.position, currentTarget.transform.position) < 0.5f)
+                    {
+                        Explode();
+                        currentTarget = null;
+                    }
+                }
             }
+            else
+            {
+                // di chuyển Enemy target gần nhất trong enemies
+                TF.position = Vector2.MoveTowards(TF.position, ClosestTarget(), moveSpeed * Time.deltaTime);
+                if(Vector2.Distance(TF.position, ClosestTarget()) < 0.5f)
+                {
+                    Explode();
+                }
+            }
+
         }
     }
 
@@ -36,6 +58,7 @@ public class Crystal_Skill_Controller : GameUnit
         enemies.Clear();
         CheckEnemyCloest();
     }
+
 
     private void CheckEnemyCloest()
     {

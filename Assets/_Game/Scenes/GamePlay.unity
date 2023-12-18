@@ -626,6 +626,7 @@ MonoBehaviour:
   maxSize: 15
   growSpeed: 1.25
   attackAmount: 6
+  maxAttackAmount: 15
 --- !u!114 &600360874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,7 +642,7 @@ MonoBehaviour:
   cooldown: 1
   crystalDuration: 5
   moveSpeed: 10
-  CloneInsteadOfCrystal: 0
+  cloneInsteadOfCrystal: 0
   canMultiCrystal: 1
   canMove: 1
   canExplode: 1

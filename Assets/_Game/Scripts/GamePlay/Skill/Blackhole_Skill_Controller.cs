@@ -22,13 +22,7 @@ public class Blackhole_Skill_Controller : GameUnit
         
         if (canAttack && attackAmount > 0 && !isAttacking)
         {
-            // if(SkillManager.Instance.Clone_Skill.CrystalInsteadOfClone)
-            // {
-            //     // attack no delay
-                
-            // }
-            // else
-                StartCoroutine(AttackWithDelay());
+            StartCoroutine(AttackWithDelay());
         }
 
 
@@ -36,10 +30,11 @@ public class Blackhole_Skill_Controller : GameUnit
         
     }
 
+
     public void OnInit()
     {
         targetEnemy.Clear();
-        canAttack = false;
+        canAttack = isAttacking = false;
         TF.localScale = Vector3.one;
         Invoke(nameof(ActiveAttack), ACTIVE_ATTACK);
         SelfDespawn();
@@ -63,20 +58,9 @@ public class Blackhole_Skill_Controller : GameUnit
         int random = Random.Range(0, targetEnemy.Count);
         CreateCloneLeft(targetEnemy[random]);
 
-        // foreach (Enemy enemy in targetEnemy)
-        // {
-        //     CreateCloneLeft(enemy);
-            
-        // }
-
         yield return new WaitForSeconds(ATTACK_DELAY);
         
         CreateCloneRight(targetEnemy[random]);
-
-        // foreach (Enemy enemy in targetEnemy)
-        // {
-        //     CreateCloneLeft(enemy);
-        // }
 
         attackAmount--;
 
