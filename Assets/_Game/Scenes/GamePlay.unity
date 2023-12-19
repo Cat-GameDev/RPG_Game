@@ -527,7 +527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 2
-  swordType: 0
+  swordType: 3
   maxDistance: 10
   spinDuration: 2
   hitCooldown: 0.35
@@ -1223,6 +1223,10 @@ PrefabInstance:
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: critChance.baseValue
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
+      propertyPath: fireDamage.baseValue
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 314fc98d6f6d053498e74123858a662d, type: 3}

@@ -24,6 +24,17 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public Stats hp;
     public Stats armor; // giap
     public Stats evasion; // le tranh
+    public Stats magicResistance;
+
+    [Header("Magic stats")]
+    public Stats fireDamage;
+    public Stats iceDamage;
+    public Stats lightingDamage;
+
+    public bool isIgnited; // bi dot chay
+    public bool isChilled; // bi dong cuc
+    public bool isShocked; // diet dat
+
 
 
     public bool IsDead => currrentHp <= 0;
@@ -38,20 +49,26 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         critPower.SetDefoutlValue(150);
     }
 
+    
+    public abstract void OnDeath();
+
     public virtual void DoDamge(CharacterStats characterStats)
     {
         if (TargetCanVoidAttack(characterStats))
             return;
 
+        int totalDamage = damage.GetValue() + strength.GetValue();
+
         if(CanCrit())
         {
-            Debug.Log("Crit");
+            totalDamage = CalculateCritialDamage(totalDamage);
         }
 
-        int totalDamage = damage.GetValue() + strength.GetValue();
+        
         totalDamage = CheckTargetArmor(characterStats, totalDamage);
 
         characterStats.OnHit(totalDamage);
+
     }
 
     public virtual void OnHit(float damage)
@@ -67,12 +84,48 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         }
     }
 
-    public abstract void OnDeath();
+    public virtual void DoMagicalDamage(CharacterStats characterStats)
+    {
+        int _fireDamage = fireDamage.GetValue();
+        int _iceDamage = iceDamage.GetValue();
+        int _lightingDamage = lightingDamage.GetValue();
 
+        int totalMagicDamage = _fireDamage + _iceDamage + _lightingDamage + intelligence.GetValue();
+        totalMagicDamage = CheckTargetResistance(characterStats, totalMagicDamage);
+
+        characterStats.OnHit(totalMagicDamage);
+    }
+
+    public void ApplyAilments(bool isIgnited, bool isChilled, bool isShocked )
+    {
+        if(this.isChilled || this.isIgnited || this.isShocked)
+            return;
+
+        this.isChilled = isChilled;
+        this.isIgnited = isIgnited;
+        this.isShocked = isShocked;
+    }
+
+
+    private int CheckTargetResistance(CharacterStats characterStats, int totalMagicalDamage)
+    {
+        totalMagicalDamage -= characterStats.magicResistance.GetValue() + (characterStats.intelligence.GetValue() * 3);
+        totalMagicalDamage = Mathf.Clamp(totalMagicalDamage, 0, int.MaxValue);
+        return totalMagicalDamage;
+    }
+
+    private int CalculateCritialDamage(int damage)
+    {
+        float totalCriticalDamage = (critPower.GetValue() + strength.GetValue()) * 0.01f;
+
+        float critalDamage = damage * totalCriticalDamage;
+
+        return Mathf.RoundToInt(critalDamage);
+    }
     private bool CanCrit()
     {
         int totalCriticalChance = critChance.GetValue() + agility.GetValue();
-        Debug.Log(totalCriticalChance);
+
         if(Random.Range(0, 100) <= totalCriticalChance)
         {
             return true;
@@ -98,4 +151,6 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         totalDamage = Mathf.Clamp(totalDamage, 0, int.MaxValue);
         return totalDamage;
     }
+
+
 }
