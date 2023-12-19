@@ -14,6 +14,7 @@ public class Crystal_Skill_Controller : GameUnit
     public List<Enemy> enemies = new List<Enemy>();
     float moveSpeed;
     Enemy currentTarget;
+    Player player;
 
     void Update()
     {
@@ -48,8 +49,9 @@ public class Crystal_Skill_Controller : GameUnit
         }
     }
 
-    public void OnInit(float moveSpeed, bool canMove)
+    public void OnInit(float moveSpeed, bool canMove, Player player)
     {
+        this.player = player;
         this.moveSpeed = moveSpeed;
         this.canMove = canMove;
         TF.localScale = Vector2.one;
@@ -121,11 +123,11 @@ public class Crystal_Skill_Controller : GameUnit
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Enemy enemy = Cache.GetEnemy(other);
+        CharacterStats enemyStats = Cache.GetCharacterStats(other);
 
-        if(enemy)
+        if(enemyStats)
         {
-            enemy.OnHit(10f);
+            player.characterStats.DoDamge(enemyStats);
         }
     }
 }

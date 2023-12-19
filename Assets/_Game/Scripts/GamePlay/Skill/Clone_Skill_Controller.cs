@@ -9,6 +9,7 @@ public class Clone_Skill_Controller : Character
     [SerializeField] SpriteRenderer sr;
     float cloneTimer;
     float cloneDuration;
+    [SerializeField] float damage = 10f;
     public override void OnInit()
     {
         sr.color = new Color(1,1,1,1);

@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2602fa69de4be2f438e03e0dc9ed4c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 4264873761619770496}
 --- !u!68 &6219334550389885497
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -245,6 +244,7 @@ GameObject:
   - component: {fileID: 4264873761619770501}
   - component: {fileID: 4264873761619770496}
   - component: {fileID: 8293025254171387556}
+  - component: {fileID: 7333680811200305200}
   m_Layer: 8
   m_Name: Enemy_Skeleton
   m_TagString: Untagged
@@ -323,19 +323,15 @@ MonoBehaviour:
   anim: {fileID: 4264873762315452945}
   rb: {fileID: 4264873761619770502}
   moveSpeed: 3
-  damage: 1
   attackArea: {fileID: 3631091543362153852}
-  hp: 0
-  characterFX: {fileID: 8293025254171387556}
+  characterStats: {fileID: 7333680811200305200}
   attackRange: 1.5
   maxSpeed: 5
   minDistanceToAttack: 0.8
-  fx: {fileID: 8293025254171387556}
   stunDuration: 0.75
   stunDirection: {x: 0.5, y: 4}
-  knockbackDir: {x: 0.2, y: 4}
+  knockbackDir: {x: 0.5, y: 4}
   knockbackDuration: 0.07
-  capsuleCollider2D: {fileID: 4264873761619770501}
 --- !u!114 &8293025254171387556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +347,51 @@ MonoBehaviour:
   sr: {fileID: 4264873762315452946}
   flashDuration: 0.2
   hitMat: {fileID: 2100000, guid: b340813d2a8be614296e93fbeab4d5a8, type: 2}
+--- !u!114 &7333680811200305200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4264873761619770500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac0ba9d0f078ebc43b6a629c455dc54e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterFX: {fileID: 8293025254171387556}
+  strength:
+    baseValue: 0
+    modifiers: 
+  agility:
+    baseValue: 0
+    modifiers: 
+  intelligence:
+    baseValue: 0
+    modifiers: 
+  vitality:
+    baseValue: 0
+    modifiers: 
+  damage:
+    baseValue: 10
+    modifiers: 
+  critChance:
+    baseValue: 90
+    modifiers: 
+  critPower:
+    baseValue: 0
+    modifiers: 
+  hp:
+    baseValue: 100
+    modifiers: 
+  armor:
+    baseValue: 0
+    modifiers: 
+  evasion:
+    baseValue: 0
+    modifiers: 
+  currrentHp: 0
+  enemy: {fileID: 4264873761619770496}
 --- !u!1 &4264873762315452959
 GameObject:
   m_ObjectHideFlags: 0

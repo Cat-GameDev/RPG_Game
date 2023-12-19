@@ -52,7 +52,7 @@ public class Crystal_Skill : Skill
 
             if(cloneInsteadOfCrystal)
             {
-                SkillManager.Instance.Clone_Skill.CreateClone(currentPositon, player.IsRight, player.CanAttack, player.Damage);
+                SkillManager.Instance.Clone_Skill.CreateClone(currentPositon, player.IsRight, player.CanAttack, player.characterStats.damage.GetValue());
             }
             
             SelfDespawn();
@@ -65,7 +65,7 @@ public class Crystal_Skill : Skill
     {
         crystal_Skill_Controller = SimplePool.Spawn<Crystal_Skill_Controller>
                                                     (PoolType.Crystal, player.TF.position, Quaternion.identity);
-        crystal_Skill_Controller.OnInit(moveSpeed, canMove);
+        crystal_Skill_Controller.OnInit(moveSpeed, canMove, player);
     }
 
     private void SelfDespawn()
@@ -80,7 +80,7 @@ public class Crystal_Skill : Skill
 
     private void SelfExplode()
     {
-        if(crystal_Skill_Controller != null && canMultiCrystal)
+        if(crystal_Skill_Controller != null)
         {
             crystal_Skill_Controller.Explode();
             crystal_Skill_Controller = null;
@@ -92,7 +92,7 @@ public class Crystal_Skill : Skill
         for (int i = 0; i < 3; i++)
         {
             Crystal_Skill_Controller crystal_Skill = SimplePool.Spawn<Crystal_Skill_Controller>(PoolType.Crystal, player.TF.position, Quaternion.identity);
-            crystal_Skill.OnInit(moveSpeed, canMove);
+            crystal_Skill.OnInit(moveSpeed, canMove, player);
 
             yield return new WaitForSeconds(TIME_DELAY_CRYSTAL);
         }

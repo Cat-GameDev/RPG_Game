@@ -4,6 +4,7 @@ using Random = UnityEngine.Random;
 
 public class Enemy_Skeleton : Enemy
 {
+    public const float TIME_ONDESPAWN = 1.5f;
     void Update()
     {
         if(isKnockback)
@@ -36,6 +37,12 @@ public class Enemy_Skeleton : Enemy
     {
         ChangeAnim(Random.Range(0,2) == 0 ? Constants.ANIM_IDLE : Constants.ANIM_REACT);
         rb.velocity = Vector2.zero;
+    }
+
+    public override void OnDeath()
+    {
+        base.OnDeath();
+        Invoke(nameof(OnDespawn), TIME_ONDESPAWN);
     }
 
 

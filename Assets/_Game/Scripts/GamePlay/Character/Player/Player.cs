@@ -55,7 +55,7 @@ public class Player : Character
 
     void Update()
     {
-        if(IsDead || !GameManager.Instance.IsState(GameState.Gameplay))
+        if(characterStats.IsDead || !GameManager.Instance.IsState(GameState.Gameplay))
             return;
         
         comboTimeWidow -= Time.deltaTime;
@@ -213,7 +213,7 @@ public class Player : Character
 
     public void ThrowAttack()
     {
-        if(!currentSword)
+        if(!currentSword && skill.Sword_Skill.CanUseSkill())
         {
             stateMachine.ChangeState(ThrowAttackState);
         }
@@ -342,12 +342,12 @@ public class Player : Character
     {
         onEnter = () =>
         {
-            skill.Clone_Skill.CreateStartClone(TF.position, isRight, canAttack, damage);
+            skill.Clone_Skill.CreateStartClone(TF.position, isRight, canAttack, characterStats.damage.GetValue());
 
             ChangeAnim(Constants.ANIM_DASH);
             isDashing = true;
             
-            skill.Dash_Skill.DashSkill(this, stateMachine, isRight, canAttack, Damage);
+            skill.Dash_Skill.DashSkill(this, stateMachine, isRight, canAttack, characterStats.damage.GetValue());
             // Vector2 dashDirection = GetDirection(isRight);
             // Vector2 targetPosition = (Vector2)TF.position + dashDirection * dashDistance;
 
@@ -509,10 +509,10 @@ public class Player : Character
 
     private void InvokeCreateCloneCounterAttack()
     {
-        skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(!isRight), !isRight, true, damage);
+        skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(!isRight), !isRight, true, characterStats.damage.GetValue());
         if(skill.Clone_Skill.CanDuplicateClone)
         {
-            skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(isRight), isRight, true, damage);
+            skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(isRight), isRight, true, characterStats.damage.GetValue());
         }
     }
 

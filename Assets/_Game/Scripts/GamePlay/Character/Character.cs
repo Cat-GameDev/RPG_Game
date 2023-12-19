@@ -3,50 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character : GameUnit, IHit
+public abstract class Character : GameUnit
 {
     [SerializeField] protected Animator anim;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected float moveSpeed;
-    [SerializeField] protected float damage;
     [SerializeField] protected AttackArea attackArea;
     protected StateMachine stateMachine = new StateMachine();
     protected float stateTimer;
     string currentAnim;
-    public float hp;
-    public bool IsDead => hp <= 0;
 
-    public float Damage { get => damage; }
     protected bool isRight;
     public bool IsRight { get => isRight;}
 
-
-    [SerializeField] CharacterFX characterFX;
+    public CharacterStats characterStats;
 
 
     public virtual void OnInit()
     {
-        hp = 1000;
         stateMachine.ChangeState(IdleState);
         DeActiveAttack();
         isRight = true;
-        
+        characterStats.OnInit();
     }
 
-    public virtual void OnHit(float damage)
-    {
-        if(!IsDead)
-        {
-            hp -= damage;
-            characterFX.StartCoroutine(nameof(characterFX.FlashFX));
-            if(IsDead)
-            {
-                OnDeath();
-            }
-        }
-    }
 
-    protected virtual void OnDeath()
+    public virtual void OnDeath()
     {
         stateMachine.ChangeState(null);
         ChangeAnim(Constants.ANIM_DIE);

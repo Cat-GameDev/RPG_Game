@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class AttackArea : MonoBehaviour
 {
-    [SerializeField] Character character;
+    [SerializeField] CharacterStats characterStats;
     void OnTriggerEnter2D(Collider2D other)
     {
-        IHit hit = Cache.GetIHit(other);
-        if (hit != null)
+        Character character = Cache.GetCharacter(other);
+        if (character != null)
         {
-            hit.OnHit(character.Damage); 
+            characterStats.DoDamge(character.characterStats);
         }
     }
 }

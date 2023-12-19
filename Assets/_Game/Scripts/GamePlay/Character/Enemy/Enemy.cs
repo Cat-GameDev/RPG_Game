@@ -12,7 +12,6 @@ public abstract class Enemy : Character
     [SerializeField] protected float maxSpeed;
     float defaultSpeed;
     [SerializeField] protected float minDistanceToAttack;
-    [SerializeField] protected CharacterFX fx;
 
     [Header("Stun info")]
     [SerializeField] protected float stunDuration;
@@ -37,16 +36,6 @@ public abstract class Enemy : Character
     public abstract Vector3 GetPositionOnHead();
     public abstract Vector3 GetOffset(bool isRight);
 
-    public override void OnHit(float damage)
-    {
-        if(!IsDead)
-        {
-            StartCoroutine(HitKnockback());
-        }
-
-        base.OnHit(damage);
-    }
-
     public void Moving()
     {
         ChangeAnim(Constants.ANIM_RUN);
@@ -69,7 +58,7 @@ public abstract class Enemy : Character
         stateMachine.ChangeState(FreezeState);
     }
 
-    protected IEnumerator HitKnockback()
+    public IEnumerator HitKnockback()
     {
         isKnockback = true;
         rb.velocity = new Vector2(knockbackDir.x * -GetDirection(isRight).x, knockbackDir.y);
@@ -245,7 +234,7 @@ public abstract class Enemy : Character
             ChangeAnim(Constants.ANIM_STUN);
             stateTimer = 0;
             rb.AddForce(stunDirection * -GetDirection(isRight), ForceMode2D.Impulse);
-            fx.InvokeRepeating(nameof(fx.RedColorBlink), 0, 0.1f);
+            characterStats.CharacterFX.InvokeRepeating(nameof(characterStats.CharacterFX.RedColorBlink), 0, 0.1f);
         };
 
         onExecute = () =>
@@ -259,7 +248,7 @@ public abstract class Enemy : Character
 
         onExit = () =>
         {
-            fx.CanelRedBlink();
+            characterStats.CharacterFX.CanelRedBlink();
         };
     }
 
