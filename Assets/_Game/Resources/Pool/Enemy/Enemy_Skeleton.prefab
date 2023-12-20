@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2602fa69de4be2f438e03e0dc9ed4c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ch: {fileID: 4264873761619770496}
 --- !u!68 &6219334550389885497
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -347,6 +348,15 @@ MonoBehaviour:
   sr: {fileID: 4264873762315452946}
   flashDuration: 0.2
   hitMat: {fileID: 2100000, guid: b340813d2a8be614296e93fbeab4d5a8, type: 2}
+  chillColor:
+  - {r: 0.30588236, g: 0.7607843, b: 1, a: 1}
+  - {r: 0.30588236, g: 0.7607843, b: 1, a: 1}
+  shockColor:
+  - {r: 0.99215686, g: 0.93333334, b: 0.3529412, a: 1}
+  - {r: 0.972549, g: 0.9372549, b: 0.61960787, a: 1}
+  igniteColor:
+  - {r: 1, g: 0.2901961, b: 0.2901961, a: 1}
+  - {r: 0.99215686, g: 0.69803923, b: 0.69803923, a: 1}
 --- !u!114 &7333680811200305200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +386,7 @@ MonoBehaviour:
     baseValue: 10
     modifiers: 
   critChance:
-    baseValue: 90
+    baseValue: 0
     modifiers: 
   critPower:
     baseValue: 0
@@ -390,6 +400,22 @@ MonoBehaviour:
   evasion:
     baseValue: 0
     modifiers: 
+  magicResistance:
+    baseValue: 0
+    modifiers: 
+  fireDamage:
+    baseValue: 0
+    modifiers: 
+  iceDamage:
+    baseValue: 1
+    modifiers: 
+  lightingDamage:
+    baseValue: 0
+    modifiers: 
+  isIgnited: 0
+  isChilled: 0
+  isShocked: 0
+  ailmentsDuration: 4
   currrentHp: 0
   enemy: {fileID: 4264873761619770496}
 --- !u!1 &4264873762315452959

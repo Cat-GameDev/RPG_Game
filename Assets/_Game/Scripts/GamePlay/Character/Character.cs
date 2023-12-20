@@ -8,6 +8,7 @@ public abstract class Character : GameUnit
     [SerializeField] protected Animator anim;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected float moveSpeed;
+    protected float defaultMoveSpeed;
     [SerializeField] protected AttackArea attackArea;
     protected StateMachine stateMachine = new StateMachine();
     protected float stateTimer;
@@ -25,6 +26,19 @@ public abstract class Character : GameUnit
         DeActiveAttack();
         isRight = true;
         characterStats.OnInit();
+        defaultMoveSpeed = moveSpeed;
+    }
+
+    public virtual void SlowCharacterBy(float slowPercentage, float slowDuration)
+    {
+        moveSpeed = moveSpeed * (1 - slowPercentage);
+        Invoke(nameof(ReturnDefaultSpeed), slowDuration);
+    }
+
+    protected virtual void ReturnDefaultSpeed()
+    {
+        anim.speed = 1;
+        moveSpeed = defaultMoveSpeed;
     }
 
 

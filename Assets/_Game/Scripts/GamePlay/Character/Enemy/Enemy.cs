@@ -248,7 +248,7 @@ public abstract class Enemy : Character
 
         onExit = () =>
         {
-            characterStats.CharacterFX.CanelRedBlink();
+            characterStats.CharacterFX.CanelChangeColor();
         };
     }
 

@@ -13,6 +13,7 @@ public class Player : Character
 
     [SerializeField] FixedJoystick joystickControl;
     [SerializeField] float jumpForce = 5f;
+    float defaultJumpForce;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundCheckDis;
 
@@ -129,6 +130,7 @@ public class Player : Character
         isJumping = isAttacking = isDashing = canAttack = isThrowAttack = isSuccessfulCounterAttack = isCatched = false;
         counterAttackArea.gameObject.SetActive(false);
         currentSword = null;
+        defaultJumpForce = jumpForce;
     }
 
     #region Ability Fuction
@@ -258,6 +260,22 @@ public class Player : Character
         this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
         this.enemy = enemy;
     }
+
+    public override void SlowCharacterBy(float slowPercentage, float slowDuration)
+    {
+        jumpForce = jumpForce * (1 - slowPercentage);
+        anim.speed = anim.speed * (1 - slowPercentage);
+        base.SlowCharacterBy(slowPercentage, slowDuration);
+    }
+
+    protected override void ReturnDefaultSpeed()
+    {
+        base.ReturnDefaultSpeed();
+        jumpForce = defaultJumpForce;
+    }
+
+
+
 
     #region StateMachine
     public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -639,6 +657,7 @@ public class Player : Character
 
     //     };
     // }
+
 
 
 

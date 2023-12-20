@@ -150,6 +150,8 @@ public enum PoolType
     Blackhole,
     UITickText,
     Crystal,
+    Thunder_Strike,
+    Shock_Strike,
 }
 
 
