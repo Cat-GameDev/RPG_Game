@@ -783,11 +783,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d85a150886f06994c8e6fc045ebca304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tf: {fileID: 0}
-  poolType: 7
-  targetStats: {fileID: 4715976908215901861}
-  moveSpeed: 20
-  anim: {fileID: 1270896436}
 --- !u!4 &1120053899
 Transform:
   m_ObjectHideFlags: 0
@@ -1567,7 +1562,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: fireDamage.baseValue
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: lightingDamage.baseValue
@@ -1711,17 +1706,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac3e6c43c88382c458947796eff772c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4715976908215901861 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7333680811200305200, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
-  m_PrefabInstance: {fileID: 8817313691014636068}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0ba9d0f078ebc43b6a629c455dc54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &7898196789041383332

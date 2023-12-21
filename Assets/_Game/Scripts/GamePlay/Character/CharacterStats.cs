@@ -6,7 +6,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public const int PLUS_POINT_SHOCKED = 20;
     public const float REDUCE_ARMOR_CHILL = .2f; // 20%
     public const float IGNITE_DAMAGE_OVER_TIME = .2f; // 20%
-    public const float CHILL_DAMAGE_OVER_TIME = .2f;
+    public const float CHILL_DAMAGE_OVER_TIME = .3f;
     public const float TIME_AILMENT = 4f;
 
     [SerializeField] protected CharacterFX characterFX;
@@ -38,7 +38,6 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public bool isChilled; // bi dong cuc // reduce armor 20%
     public bool isShocked; // diet dat // reduce accuracy(Do chinh xac) by 20%
 
-    [SerializeField] private float ailmentsDuration = 4;
     private float ignitedTimer;
     private float chilledTimer;
     private float shockedTimer;
@@ -74,26 +73,15 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         if (shockedTimer < 0)
             isShocked = false;
 
-        if(isIgnited && igniteDamageTimer < 0)
+        if(isIgnited)
             ApplyIgniteDamage();
-    }
-
-    private void ApplyIgniteDamage()
-    {
-        currrentHp -= igniteDamage;
-
-        if(IsDead)
-        {
-            OnDeath();
-        }
-
-        igniteDamageTimer = igniteDamageCoodlown;
     }
 
     public void OnInit()
     {
         currrentHp = hp.GetValue();
         critPower.SetDefoutlValue(150);
+        isShocked = isChilled = isIgnited = false;
     }
 
     
@@ -114,7 +102,9 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         
         totalDamage = CheckTargetArmor(characterStats, totalDamage);
 
-        //characterStats.OnHit(totalDamage);
+        characterStats.OnHit(totalDamage);
+
+        // if have a magic
         DoMagicalDamage(characterStats);
 
     }
@@ -132,6 +122,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         }
     }
 
+    #region Magic and Ailment
     public virtual void DoMagicalDamage(CharacterStats characterStats)
     {
         int _fireDamage = fireDamage.GetValue();
@@ -143,30 +134,35 @@ public abstract class CharacterStats : MonoBehaviour, IHit
 
         characterStats.OnHit(totalMagicDamage);
 
-        if(Mathf.Max(_fireDamage, _iceDamage,_lightingDamage) <= 0)
+        if (Mathf.Max(_fireDamage, _iceDamage, _lightingDamage) <= 0)
             return;
 
+        AttempyToApplyAilment(characterStats, _fireDamage, _iceDamage, _lightingDamage);
+
+    }
+    private void AttempyToApplyAilment(CharacterStats characterStats, int _fireDamage, int _iceDamage, int _lightingDamage)
+    {
         bool canApplyIgnite = _fireDamage > _iceDamage && _fireDamage > _lightingDamage;
         bool canApplyChill = _iceDamage > _fireDamage && _iceDamage > _lightingDamage;
         bool canApplyShock = _lightingDamage > _iceDamage && _lightingDamage > _fireDamage;
 
-        while(!canApplyChill && !canApplyIgnite && !canApplyShock)
+        while (!canApplyChill && !canApplyIgnite && !canApplyShock)
         {
-            if(Random.value < .3f && _fireDamage > 0)
+            if (Random.value < .3f && _fireDamage > 0)
             {
                 canApplyIgnite = true;
                 characterStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
                 return;
             }
 
-            if(Random.value < .5f && _iceDamage > 0)
+            if (Random.value < .5f && _iceDamage > 0)
             {
                 canApplyChill = true;
                 characterStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
                 return;
             }
 
-            if(Random.value < .5f && _lightingDamage > 0)
+            if (Random.value < .5f && _lightingDamage > 0)
             {
                 canApplyShock = true;
                 characterStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
@@ -174,22 +170,21 @@ public abstract class CharacterStats : MonoBehaviour, IHit
             }
         }
 
-        if(canApplyIgnite)
+        if (canApplyIgnite)
             characterStats.SetupIgniteDamange(Mathf.RoundToInt(_fireDamage * IGNITE_DAMAGE_OVER_TIME));
 
-        if(canApplyShock)
+        if (canApplyShock)
             characterStats.SetupShockStrikeDamage(Mathf.RoundToInt(_lightingDamage * .1f));
 
         characterStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
-
     }
 
     public void ApplyAilments(bool isIgnited, bool isChilled, bool isShocked)
     {
-        bool canApplyIgnite = !isIgnited && !isChilled && !isShocked;
-        bool canApplyChill = !isIgnited && !isChilled && !isShocked;
-        bool canApplyShock = !isIgnited && !isChilled;
-
+        bool canApplyIgnite = !this.isIgnited && !this.isChilled && !this.isShocked;
+        bool canApplyChill = !this.isIgnited && !this.isChilled && !this.isShocked;
+        bool canApplyShock = !this.isIgnited && !this.isChilled;
+        Debug.Log(canApplyIgnite);
         if(isIgnited && canApplyIgnite)
         {
             this.isIgnited = isIgnited;
@@ -232,7 +227,21 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         shockedTimer = TIME_AILMENT;
         characterFX.ShockFxFor(TIME_AILMENT);
     }
+    private void ApplyIgniteDamage()
+    {
+        if(igniteDamageTimer < 0)
+        {
+            currrentHp -= igniteDamage;
 
+            if(IsDead)
+            {
+                OnDeath();
+            }
+
+            igniteDamageTimer = igniteDamageCoodlown;
+        }
+        
+    }
     private void HitNearestTargetWithShockStrike()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 25);
@@ -270,6 +279,9 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public void SetupIgniteDamange(int damage) => igniteDamage = damage;
     public void SetupShockStrikeDamage(int damage) => shockDamage = damage;
 
+    #endregion
+
+    #region Calculate Damage
     private int CheckTargetResistance(CharacterStats characterStats, int totalMagicalDamage)
     {
         totalMagicalDamage -= characterStats.magicResistance.GetValue() + (characterStats.intelligence.GetValue() * 3);
@@ -322,5 +334,5 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         return totalDamage;
     }
 
-
+    #endregion
 }
