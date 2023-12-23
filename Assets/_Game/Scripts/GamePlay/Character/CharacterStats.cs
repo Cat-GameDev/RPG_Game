@@ -10,6 +10,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public const float TIME_AILMENT = 4f;
 
     [SerializeField] protected CharacterFX characterFX;
+    protected HealthBar_UI healthBar_UI;
 
     [Header("Major stats")]
     public Stats strength; // 1 point increase damage by 1 and crit.power by 1%
@@ -73,18 +74,18 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         if (shockedTimer < 0)
             isShocked = false;
 
-        if(isIgnited)
+        if(isIgnited && !IsDead)
             ApplyIgniteDamage();
     }
 
-    public void OnInit()
+    public virtual void OnInit()
     {
         currrentHp = hp.GetValue();
         critPower.SetDefoutlValue(150);
         isShocked = isChilled = isIgnited = false;
     }
 
-    
+    protected abstract void CreateHealthBar();
     public abstract void OnDeath();
 
     public virtual void DoDamge(CharacterStats characterStats)
@@ -113,13 +114,19 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     {
         if(!IsDead)
         {
-            currrentHp -= damage;
             characterFX.StartCoroutine(nameof(characterFX.FlashFX));
-            if(IsDead)
-            {
-                OnDeath();
-            }
+            DecreaseHealth(damage);
         }
+    }
+
+    private void DecreaseHealth(float damage)
+    {
+        currrentHp -= damage;
+        if (IsDead)
+        {
+            OnDeath();
+        }
+        healthBar_UI.SetNewHp(currrentHp);
     }
 
     #region Magic and Ailment
@@ -184,7 +191,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         bool canApplyIgnite = !this.isIgnited && !this.isChilled && !this.isShocked;
         bool canApplyChill = !this.isIgnited && !this.isChilled && !this.isShocked;
         bool canApplyShock = !this.isIgnited && !this.isChilled;
-        Debug.Log(canApplyIgnite);
+
         if(isIgnited && canApplyIgnite)
         {
             this.isIgnited = isIgnited;
@@ -231,13 +238,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     {
         if(igniteDamageTimer < 0)
         {
-            currrentHp -= igniteDamage;
-
-            if(IsDead)
-            {
-                OnDeath();
-            }
-
+            DecreaseHealth(igniteDamage);
             igniteDamageTimer = igniteDamageCoodlown;
         }
         

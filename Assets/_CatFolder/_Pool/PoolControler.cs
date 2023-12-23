@@ -152,6 +152,10 @@ public enum PoolType
     Crystal,
     Thunder_Strike,
     Shock_Strike,
+    HealthBar_UI,
+    CombatText_UI,
+    
+    
 }
 
 
