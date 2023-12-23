@@ -9,9 +9,11 @@ public class Player : Character
     public const float TIME_RESET_ATTACK = 2f;
     public const float MOVE_ATTACK = 0.1f;
     public const float COUNTER_ATTACK_DURATION = 0.2f;
+    public const float CLONE_COUNTER_ATTACK = 0.4f;
 
     [SerializeField] FixedJoystick joystickControl;
     [SerializeField] float jumpForce = 5f;
+    float defaultJumpForce;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float groundCheckDis;
 
@@ -43,6 +45,9 @@ public class Player : Character
     bool isCatched;
     Sword_Skil_Controller currentSword;
     Quaternion throwAttackRotation;
+    Enemy enemy;
+
+    public bool CanAttack { get => canAttack;}
 
     void Start()
     {
@@ -51,7 +56,7 @@ public class Player : Character
 
     void Update()
     {
-        if(IsDead || !GameManager.Instance.IsState(GameState.Gameplay))
+        if(characterStats.IsDead || !GameManager.Instance.IsState(GameState.Gameplay))
             return;
         
         comboTimeWidow -= Time.deltaTime;
@@ -109,6 +114,14 @@ public class Player : Character
         {
             UltimateAttack();
         }
+
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            if(skill.Crystal_Skill.CanUseSkill())
+            {
+                skill.Crystal_Skill.UseSkill();
+            }
+        }
     }
 
     public override void OnInit()
@@ -117,6 +130,7 @@ public class Player : Character
         isJumping = isAttacking = isDashing = canAttack = isThrowAttack = isSuccessfulCounterAttack = isCatched = false;
         counterAttackArea.gameObject.SetActive(false);
         currentSword = null;
+        defaultJumpForce = jumpForce;
     }
 
     #region Ability Fuction
@@ -201,7 +215,7 @@ public class Player : Character
 
     public void ThrowAttack()
     {
-        if(!currentSword)
+        if(!currentSword && skill.Sword_Skill.CanUseSkill())
         {
             stateMachine.ChangeState(ThrowAttackState);
         }
@@ -241,7 +255,27 @@ public class Player : Character
         }
         return false;
     } 
-    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack) => this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
+    public void SetIsSuccessfulCounterAttack(bool isSuccessfulCounterAttack, Enemy enemy) 
+    {   
+        this.isSuccessfulCounterAttack = isSuccessfulCounterAttack;
+        this.enemy = enemy;
+    }
+
+    public override void SlowCharacterBy(float slowPercentage, float slowDuration)
+    {
+        jumpForce = jumpForce * (1 - slowPercentage);
+        anim.speed = anim.speed * (1 - slowPercentage);
+        base.SlowCharacterBy(slowPercentage, slowDuration);
+    }
+
+    protected override void ReturnDefaultSpeed()
+    {
+        base.ReturnDefaultSpeed();
+        jumpForce = defaultJumpForce;
+    }
+
+
+
 
     #region StateMachine
     public override void IdleState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -326,12 +360,12 @@ public class Player : Character
     {
         onEnter = () =>
         {
-            skill.Clone_Skill.CreateClone(TF.position, isRight, canAttack, damage);
+            skill.Clone_Skill.CreateStartClone(TF.position, isRight, canAttack, characterStats.damage.GetValue());
 
             ChangeAnim(Constants.ANIM_DASH);
             isDashing = true;
             
-            skill.Dash_Skill.DashSkill(this, stateMachine, isRight);
+            skill.Dash_Skill.DashSkill(this, stateMachine, isRight, canAttack, characterStats.damage.GetValue());
             // Vector2 dashDirection = GetDirection(isRight);
             // Vector2 targetPosition = (Vector2)TF.position + dashDirection * dashDistance;
 
@@ -479,6 +513,7 @@ public class Player : Character
         onEnter = () =>
         {   
             ChangeAnim(Constants.ANIM_SUCCESSFUL_COUNTER_ATTACK);
+            Invoke(nameof(InvokeCreateCloneCounterAttack), CLONE_COUNTER_ATTACK);
         };
 
         onExecute = () =>
@@ -488,6 +523,15 @@ public class Player : Character
                 stateMachine.ChangeState(IdleState);
             }
         };
+    }
+
+    private void InvokeCreateCloneCounterAttack()
+    {
+        skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(!isRight), !isRight, true, characterStats.damage.GetValue());
+        if(skill.Clone_Skill.CanDuplicateClone)
+        {
+            skill.Clone_Skill.CreateCloneCounterAttack(enemy.GetOffset(isRight), isRight, true, characterStats.damage.GetValue());
+        }
     }
 
     private void ThrowAttackState(ref Action onEnter, ref Action onExecute, ref Action onExit)
@@ -613,6 +657,7 @@ public class Player : Character
 
     //     };
     // }
+
 
 
 

@@ -9,6 +9,12 @@ public class Clone_Skill_Controller : Character
     [SerializeField] SpriteRenderer sr;
     float cloneTimer;
     float cloneDuration;
+
+    void Start()
+    {
+        characterStats = LevelManager.Instance.Player.characterStats;
+    }
+
     public override void OnInit()
     {
         sr.color = new Color(1,1,1,1);
@@ -32,9 +38,9 @@ public class Clone_Skill_Controller : Character
     {
         if(canAttack)
         {
-            anim.SetInteger("attack", Random.Range(1,3));
+            int random = Random.Range(1, 4);
+            anim.SetInteger(Constants.ANIM_ATTACK, random);
         }
-        this.damage = damage;
         TF.position = position;
         cloneTimer = cloneDuration;
         this.cloneDuration = cloneDuration;

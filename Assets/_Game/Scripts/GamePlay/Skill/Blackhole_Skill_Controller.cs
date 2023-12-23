@@ -6,7 +6,7 @@ using UnityEngine;
 public class Blackhole_Skill_Controller : GameUnit
 {
     public const float ATTACK_DELAY = 0.2f;
-    public const float ACTIVE_ATTACK = 3f;
+    public const float ACTIVE_ATTACK = 1.5f;
     float maxSize;
     float growSpeed;
     List<Enemy> targetEnemy = new List<Enemy>();
@@ -30,10 +30,11 @@ public class Blackhole_Skill_Controller : GameUnit
         
     }
 
+
     public void OnInit()
     {
         targetEnemy.Clear();
-        canAttack = false;
+        canAttack = isAttacking = false;
         TF.localScale = Vector3.one;
         Invoke(nameof(ActiveAttack), ACTIVE_ATTACK);
         SelfDespawn();
@@ -66,6 +67,8 @@ public class Blackhole_Skill_Controller : GameUnit
         yield return new WaitForSeconds(ATTACK_DELAY);
         isAttacking = false;
     }
+
+
 
     private void ActiveAttack() => canAttack = true;
     

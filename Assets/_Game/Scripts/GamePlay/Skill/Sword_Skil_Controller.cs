@@ -110,10 +110,11 @@ public class Sword_Skil_Controller : GameUnit
 
                 foreach (Collider2D hit in colliders)
                 {
-                    Enemy hitEnemy = Cache.GetEnemy(hit);
-                    if (hitEnemy)
+                    CharacterStats enemyStats = Cache.GetCharacterStats(hit);
+
+                    if(enemyStats)
                     {
-                        hitEnemy.OnHit(player.Damage);
+                        player.characterStats.DoDamge(enemyStats);
                     }
 
                 }
@@ -159,7 +160,8 @@ public class Sword_Skil_Controller : GameUnit
         TF.position = Vector2.MoveTowards(TF.position, enemyTargets[targetIndex].TF.position, bounceSpeed * Time.deltaTime);
         if (Vector2.Distance(TF.position, enemyTargets[targetIndex].TF.position) < 0.1f)
         {
-            enemyTargets[targetIndex].OnHit(player.Damage);
+            //enemyTargets[targetIndex].OnHit(player.characterStats.damage.GetValue());
+            player.characterStats.DoDamge(enemyTargets[targetIndex].characterStats);
             targetIndex++;
             bounceAmount--;
 
@@ -227,14 +229,18 @@ public class Sword_Skil_Controller : GameUnit
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Enemy enemy = Cache.GetEnemy(other);
 
-        if (enemy)
+        CharacterStats enemyStats = Cache.GetCharacterStats(other);
+
+        if(enemyStats)
         {
-            enemy.OnHit(player.Damage);
+            player.characterStats.DoDamge(enemyStats);
+            Enemy enemy = Cache.GetEnemy(other);
             enemy.FreezeState();
             GetBounceTarget();
         }
+
+
 
         if (isReturning)
         {
@@ -251,7 +257,7 @@ public class Sword_Skil_Controller : GameUnit
 
 
 
-        if (pierceAmount > 0 && enemy)
+        if (pierceAmount > 0 && enemyStats)
         {
             pierceAmount--;
             return;

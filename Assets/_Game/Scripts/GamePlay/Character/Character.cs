@@ -3,48 +3,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character : GameUnit, IHit
+public abstract class Character : GameUnit
 {
     [SerializeField] protected Animator anim;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected float moveSpeed;
-    [SerializeField] protected float damage;
+    protected float defaultMoveSpeed;
     [SerializeField] protected AttackArea attackArea;
     protected StateMachine stateMachine = new StateMachine();
     protected float stateTimer;
     string currentAnim;
-    public float hp;
-    public bool IsDead => hp <= 0;
-
-    public float Damage { get => damage; }
 
     protected bool isRight;
-    [SerializeField] CharacterFX characterFX;
+    public bool IsRight { get => isRight;}
+
+    public CharacterStats characterStats;
 
 
     public virtual void OnInit()
     {
-        hp = 1000;
         stateMachine.ChangeState(IdleState);
         DeActiveAttack();
         isRight = true;
-        
+        characterStats.OnInit();
+        defaultMoveSpeed = moveSpeed;
     }
 
-    public virtual void OnHit(float damage)
+    public virtual void SlowCharacterBy(float slowPercentage, float slowDuration)
     {
-        if(!IsDead)
-        {
-            hp -= damage;
-            characterFX.StartCoroutine(nameof(characterFX.FlashFX));
-            if(IsDead)
-            {
-                OnDeath();
-            }
-        }
+        moveSpeed = moveSpeed * (1 - slowPercentage);
+        Invoke(nameof(ReturnDefaultSpeed), slowDuration);
     }
 
-    protected virtual void OnDeath()
+    protected virtual void ReturnDefaultSpeed()
+    {
+        anim.speed = 1;
+        moveSpeed = defaultMoveSpeed;
+    }
+
+
+    public virtual void OnDeath()
     {
         stateMachine.ChangeState(null);
         ChangeAnim(Constants.ANIM_DIE);

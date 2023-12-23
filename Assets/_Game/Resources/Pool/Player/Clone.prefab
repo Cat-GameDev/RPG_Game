@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2602fa69de4be2f438e03e0dc9ed4c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: -5459843739877591452}
+  ch: {fileID: -5459843739877591452}
 --- !u!68 &3783617137883634656
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -197,8 +197,6 @@ MonoBehaviour:
   anim: {fileID: 848196035791957055}
   rb: {fileID: 0}
   moveSpeed: 0
-  damage: 0
   attackArea: {fileID: 6017072427102345358}
-  hp: 0
-  characterFX: {fileID: 0}
+  characterStats: {fileID: 0}
   sr: {fileID: 5377326351623407072}

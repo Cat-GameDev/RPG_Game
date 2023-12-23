@@ -9,12 +9,19 @@ public class EnemySight : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) 
     {
         Character playerCharacter = Cache.GetCharacter(other);
-        enemy.SetTarget(playerCharacter);
-        enemy.IncreaseMoveSpeed();
+        if(playerCharacter)
+        {
+            enemy.SetTarget(playerCharacter);
+            enemy.IncreaseMoveSpeed();
+        }
+        
     } 
 
     private void OnTriggerExit2D(Collider2D other) 
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            return;
+        
         enemy.SetTarget(null);
         enemy.ResetMoveSpeed();
     }

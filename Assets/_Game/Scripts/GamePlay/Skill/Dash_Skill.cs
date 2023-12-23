@@ -6,7 +6,7 @@ public class Dash_Skill : Skill
     [SerializeField] float dashDistance;
     [SerializeField] float dashDuration;
 
-    public void DashSkill(Player player, StateMachine stateMachine, bool dir)
+    public void DashSkill(Player player, StateMachine stateMachine, bool dir, bool canAttack, float damage)
     {
         Vector2 dashDirection = player.GetDirection(dir);
         Vector2 targetPosition = (Vector2)player.TF.position + dashDirection * dashDistance;
@@ -31,6 +31,7 @@ public class Dash_Skill : Skill
                 //isDashing = false;
                 player.TF.position = targetPosition;
                 stateMachine.ChangeState(player.IdleState);
+                SkillManager.Instance.Clone_Skill.CreateOverClone(player.TF.position, dir, canAttack, damage);
             });
     }
 }

@@ -149,6 +149,13 @@ public enum PoolType
     Sword,
     Blackhole,
     UITickText,
+    Crystal,
+    Thunder_Strike,
+    Shock_Strike,
+    HealthBar_UI,
+    CombatText_UI,
+    
+    
 }
 
 

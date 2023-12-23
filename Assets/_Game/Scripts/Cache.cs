@@ -42,5 +42,17 @@ public static class Cache
         return enemies[collider];
     }
 
+    private static Dictionary<Collider2D, CharacterStats> characterStats = new Dictionary<Collider2D, CharacterStats>();
+
+    public static CharacterStats GetCharacterStats(Collider2D collider)
+    {
+        if (!characterStats.ContainsKey(collider))
+        {
+            characterStats.Add(collider, collider.GetComponent<CharacterStats>());
+        }
+
+        return characterStats[collider];
+    }
+
 
 }
