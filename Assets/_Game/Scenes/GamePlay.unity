@@ -2930,6 +2930,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c986d9efb0e277499a066655a8e76e8, type: 2}
   - {fileID: 11400000, guid: 56056d34ce1c72d44979b18e1514194f, type: 2}
   - {fileID: 11400000, guid: 7b0846fddb64e71438fdf173edd76a97, type: 2}
+  - {fileID: 11400000, guid: 336872341e2a7364b937c0def314898d, type: 2}
+  - {fileID: 11400000, guid: 7b1ed38a3eef89948b487a0d3097af74, type: 2}
   inventory: []
   stash: []
   equipment: []
