@@ -48,6 +48,7 @@ public class Player : Character
     Enemy enemy;
 
     public bool CanAttack { get => canAttack;}
+    public int ComboCounter { get => comboCounter;}
 
     void Start()
     {

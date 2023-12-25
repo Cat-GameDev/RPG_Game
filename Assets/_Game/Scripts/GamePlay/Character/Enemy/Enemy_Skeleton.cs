@@ -7,11 +7,10 @@ public class Enemy_Skeleton : Enemy
     public const float TIME_ONDESPAWN = 1.5f;
     void Update()
     {
-        if(isKnockback)
+        if(isKnockback || characterStats.IsDead)
             return;
 
         stateMachine?.Execute();
-        //Debug.Log(stateMachine.name);
     }
 
     public override void OnInit()

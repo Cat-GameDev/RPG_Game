@@ -8,7 +8,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     public const float IGNITE_DAMAGE_OVER_TIME = .2f; // 20%
     public const float CHILL_DAMAGE_OVER_TIME = .3f;
     public const float TIME_AILMENT = 4f;
-
+    [SerializeField] protected ItemDrop itemDrop;
     [SerializeField] protected CharacterFX characterFX;
     protected HealthBar_UI healthBar_UI;
 
@@ -86,7 +86,10 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     }
 
     protected abstract void CreateHealthBar();
-    public abstract void OnDeath();
+    public virtual void OnDeath()
+    {
+        itemDrop.GenerateDrop();
+    }
 
     public virtual void DoDamge(CharacterStats characterStats)
     {
@@ -122,11 +125,12 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     private void DecreaseHealth(float damage)
     {
         currrentHp -= damage;
+        healthBar_UI.SetNewHp(currrentHp);
         if (IsDead)
         {
             OnDeath();
         }
-        healthBar_UI.SetNewHp(currrentHp);
+        
     }
 
     #region Magic and Ailment

@@ -9,6 +9,16 @@ public class AttackArea : MonoBehaviour
         if (character != null)
         {
             ch.characterStats.DoDamge(character.characterStats);
+
+            
+            // Only enemy 
+            if(character is Player)
+                return;
+
+            //inventory get weapon call in effect 
+            Inventory.Instance.GetEquipment(EquipmentType.Weapon)?.ExecuteItemEffect(character.TF);
+            
+            
         }
     }
 }

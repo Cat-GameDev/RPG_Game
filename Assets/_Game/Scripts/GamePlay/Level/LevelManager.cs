@@ -13,7 +13,11 @@ public class LevelManager : Singleton<LevelManager>
         player.OnInit();
         foreach(var enemy in enemies)
         {
-            enemy.OnInit();
+            if(enemy != null)
+            {
+                enemy.OnInit();
+            }
+            
         }
     }
 }

@@ -6,6 +6,7 @@ public class PlayerStats : CharacterStats
     [SerializeField] Player player;
     public override void OnDeath()
     {
+        base.OnDeath();
         healthBar_UI.OnDespawn();
         player.OnDeath();
     }

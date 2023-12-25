@@ -35,6 +35,10 @@ public class Crystal_Skill_Controller : GameUnit
                         currentTarget = null;
                     }
                 }
+                else
+                {
+                    Explode();
+                }
             }
             else
             {

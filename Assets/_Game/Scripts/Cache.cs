@@ -54,5 +54,18 @@ public static class Cache
         return characterStats[collider];
     }
 
+    
+    private static Dictionary<Collider2D, Player> player = new Dictionary<Collider2D, Player>();
+
+    public static Player GetPlayer(Collider2D collider)
+    {
+        if (!player.ContainsKey(collider))
+        {
+            player.Add(collider, collider.GetComponent<Player>());
+        }
+
+        return player[collider];
+    }
+
 
 }
