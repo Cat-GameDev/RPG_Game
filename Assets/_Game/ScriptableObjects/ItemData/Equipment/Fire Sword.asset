@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4f826367acb744c88ab745cc3d0fb4, type: 3}
   m_Name: Fire Sword
   m_EditorClassIdentifier: 
-  itemType: 0
-  itemName: 
-  icon: {fileID: 0}
+  itemType: 1
+  itemName: Fire Sword
+  icon: {fileID: 21300000, guid: 8ec400ce76959e84fa1591619d8ce590, type: 3}
   dropChance: 0
   equipmentType: 0
-  ItemEffects: []
+  ItemEffects:
+  - {fileID: 11400000, guid: 301d700408de64a48813a6745965aa2e, type: 2}
   strength: 0
   agility: 0
   intelligence: 0

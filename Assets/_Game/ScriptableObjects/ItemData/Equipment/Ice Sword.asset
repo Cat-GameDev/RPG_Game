@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4f826367acb744c88ab745cc3d0fb4, type: 3}
   m_Name: Ice Sword
   m_EditorClassIdentifier: 
-  itemType: 0
-  itemName: 
-  icon: {fileID: 0}
+  itemType: 1
+  itemName: Ice Sowrd
+  icon: {fileID: 21300000, guid: e1b3badc5fb6d7344a135d019250d53d, type: 3}
   dropChance: 0
   equipmentType: 0
-  ItemEffects: []
+  ItemEffects:
+  - {fileID: 11400000, guid: 0b3074fd1c92bed4e84c0c6036d5bab2, type: 2}
   strength: 0
   agility: 0
   intelligence: 0

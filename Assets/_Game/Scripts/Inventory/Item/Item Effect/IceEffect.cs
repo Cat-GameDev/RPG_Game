@@ -5,9 +5,9 @@ public class IceEffect : ItemEffect
 {
     public override void ExecuteEffect(Transform target)
     {
-        Fire_Controller fire_Controller = SimplePool.Spawn<Fire_Controller>
-                                            (PoolType.Fire_Effect, target.position, Quaternion.identity);
+        Ice_Controller ice_Controller = SimplePool.Spawn<Ice_Controller>
+                                            (PoolType.Ice_Effect, target.position, Quaternion.identity);
 
-        fire_Controller.OnInit();
+        ice_Controller.OnInit();
     }
 }
