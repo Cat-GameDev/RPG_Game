@@ -157,6 +157,9 @@ public enum PoolType
     Item_Object,
     ThunderStrike_Effect,
     IceAndFire_Effect,
+    Fire_Effect,
+    Ice_Effect,
+    
     
     
 }
