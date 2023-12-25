@@ -20,7 +20,8 @@ public class Crystal_Skill_Controller : GameUnit
     {
         if(canMove)
         {
-            if (SkillManager.Instance.Clone_Skill.CrystalInsteadOfClone)
+            //if (SkillManager.Instance.Clone_Skill.CrystalInsteadOfClone)
+            if(GameManager.Instance.IsState(GameState.UltimateSkill))
             {
                 if (enemies.Count > 0)
                 {
@@ -28,11 +29,14 @@ public class Crystal_Skill_Controller : GameUnit
                     {
                         currentTarget = enemies[Random.Range(0, enemies.Count)];
                     }
-                    TF.position = Vector2.MoveTowards(TF.position, currentTarget.transform.position, moveSpeed * Time.deltaTime);
-                    if (Vector2.Distance(TF.position, currentTarget.transform.position) < 0.5f)
+                    if (currentTarget != null)
                     {
-                        Explode();
-                        currentTarget = null;
+                        TF.position = Vector2.MoveTowards(TF.position, currentTarget.TF.position, moveSpeed * Time.deltaTime);
+                        if (Vector2.Distance(TF.position, currentTarget.TF.position) < 0.5f)
+                        {
+                            Explode();
+                            currentTarget = null;
+                        }
                     }
                 }
                 else
@@ -89,6 +93,9 @@ public class Crystal_Skill_Controller : GameUnit
 
             for (int i = 0; i < enemies.Count; i++)
             {
+                if(enemies[i] == null)
+                    return TF.position;
+                
                 float distance = Vector2.Distance(TF.position, enemies[i].transform.position);
 
                 if (distance < closestDistance)
@@ -132,6 +139,8 @@ public class Crystal_Skill_Controller : GameUnit
         if(enemyStats)
         {
             player.characterStats.DoDamge(enemyStats);
+
+            Inventory.Instance.GetEquipment(EquipmentType.Amulet)?.ExecuteItemEffect(enemyStats.transform);
         }
     }
 }

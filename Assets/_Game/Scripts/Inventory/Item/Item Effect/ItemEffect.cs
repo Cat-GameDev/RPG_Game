@@ -5,6 +5,6 @@ public class ItemEffect : ScriptableObject
 {
     public virtual void ExecuteEffect(Transform target)
     {
-        Debug.Log("ExecuteEffect");
+
     }
 }

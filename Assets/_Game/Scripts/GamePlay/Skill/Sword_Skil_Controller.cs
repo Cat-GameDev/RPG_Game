@@ -114,13 +114,19 @@ public class Sword_Skil_Controller : GameUnit
 
                     if(enemyStats)
                     {
-                        player.characterStats.DoDamge(enemyStats);
+                        SwordDoDamage(enemyStats);
                     }
 
                 }
 
             }
         }
+    }
+
+    private void SwordDoDamage(CharacterStats enemyStats)
+    {
+        player.characterStats.DoDamge(enemyStats);
+        Inventory.Instance.GetEquipment(EquipmentType.Amulet)?.ExecuteItemEffect(enemyStats.transform);
     }
 
     private void StopWhenSpining()
@@ -157,11 +163,14 @@ public class Sword_Skil_Controller : GameUnit
     private void Bounce()
     {
         ChangeAnim(Constants.ANIM_FLIP);
+        if(enemyTargets[targetIndex] == null)
+            return;
+
         TF.position = Vector2.MoveTowards(TF.position, enemyTargets[targetIndex].TF.position, bounceSpeed * Time.deltaTime);
         if (Vector2.Distance(TF.position, enemyTargets[targetIndex].TF.position) < 0.1f)
         {
             //enemyTargets[targetIndex].OnHit(player.characterStats.damage.GetValue());
-            player.characterStats.DoDamge(enemyTargets[targetIndex].characterStats);
+            SwordDoDamage(enemyTargets[targetIndex].characterStats);
             targetIndex++;
             bounceAmount--;
 
@@ -234,7 +243,7 @@ public class Sword_Skil_Controller : GameUnit
 
         if(enemyStats)
         {
-            player.characterStats.DoDamge(enemyStats);
+            SwordDoDamage(enemyStats);
             Enemy enemy = Cache.GetEnemy(other);
             enemy.FreezeState();
             GetBounceTarget();

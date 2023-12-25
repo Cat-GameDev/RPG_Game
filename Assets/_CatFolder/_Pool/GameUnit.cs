@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class GameUnit : MonoBehaviour
@@ -9,11 +8,11 @@ public class GameUnit : MonoBehaviour
     {
         get
         {
-            //tf = tf ?? gameObject.transform;
-            if (tf == null)
-            {
-                tf = transform;
-            }
+            tf = tf ?? gameObject.transform;
+            // if (tf == null)
+            // {
+            //     tf = transform;
+            // }
             return tf;
         }
     }

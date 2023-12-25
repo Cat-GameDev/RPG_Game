@@ -1523,7 +1523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 2
-  swordType: 3
+  swordType: 1
   maxDistance: 10
   spinDuration: 2
   hitCooldown: 0.35
@@ -1563,7 +1563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 1
-  crystalDuration: 4
+  crystalDuration: 2.5
   moveSpeed: 10
   cloneInsteadOfCrystal: 0
   canMultiCrystal: 0
@@ -2927,6 +2927,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
   - {fileID: 11400000, guid: 520a5dab3ed1f9146b1917878f7842b2, type: 2}
   - {fileID: 11400000, guid: 3bf62833ab0fb8748a4b68b5d60c40a4, type: 2}
+  - {fileID: 11400000, guid: 5c986d9efb0e277499a066655a8e76e8, type: 2}
   inventory: []
   stash: []
   equipment: []
@@ -5085,12 +5086,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1945673686}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
+      propertyPath: damage.baseValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: evasion.baseValue
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: strength.baseValue
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: iceDamage.baseValue
@@ -5102,7 +5107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: fireDamage.baseValue
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3512636015375953201, guid: 314fc98d6f6d053498e74123858a662d, type: 3}
       propertyPath: lightingDamage.baseValue

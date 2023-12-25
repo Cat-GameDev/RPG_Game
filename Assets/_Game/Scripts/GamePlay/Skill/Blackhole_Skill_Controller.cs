@@ -22,7 +22,8 @@ public class Blackhole_Skill_Controller : GameUnit
         
         if (canAttack && attackAmount > 0 && !isAttacking)
         {
-            StartCoroutine(AttackWithDelay());
+            if(targetEnemy.Count > 0)
+                StartCoroutine(AttackWithDelay());
         }
 
 
@@ -42,13 +43,21 @@ public class Blackhole_Skill_Controller : GameUnit
 
     private void CreateCloneLeft(Enemy enemy)
     {
-        SkillManager.Instance.Clone_Skill.CreateClone(enemy.GetOffset(false), false, true, 10f);
+        if(enemy != null)
+        {
+            SkillManager.Instance.Clone_Skill.CreateClone(enemy.GetOffset(false), false, true, 10f);
+        }
+        
     }
 
     private void CreateCloneRight(Enemy enemy)
     {
-        SkillManager.Instance.Clone_Skill.CreateClone(enemy.GetOffset(true), true, true, 10f);
+        if(enemy != null)
+        {
+            SkillManager.Instance.Clone_Skill.CreateClone(enemy.GetOffset(true), true, true, 10f);
+        }
     }
+        
     
 
     private IEnumerator AttackWithDelay()
@@ -57,6 +66,8 @@ public class Blackhole_Skill_Controller : GameUnit
 
         int random = Random.Range(0, targetEnemy.Count);
         CreateCloneLeft(targetEnemy[random]);
+        
+        
 
         yield return new WaitForSeconds(ATTACK_DELAY);
         

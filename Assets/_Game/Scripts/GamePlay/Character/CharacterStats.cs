@@ -277,7 +277,6 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         {
             ShockStrike_Controller newShockStrike = SimplePool.Spawn<ShockStrike_Controller>(PoolType.Shock_Strike, transform.position, Quaternion.identity);
             newShockStrike.Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
-            Debug.Log(closestEnemy.GetComponent<CharacterStats>().name);
         }
     }
 
