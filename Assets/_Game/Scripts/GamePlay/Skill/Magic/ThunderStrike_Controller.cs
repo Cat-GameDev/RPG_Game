@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class ThunderStrike_Controller : GameUnit
 {
-    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    public const float TIME_SELF_DESPAWN = .5f;
+    public void OnInit()
     {
-        if(collision.GetComponent<Enemy>() != null)
+        Invoke(nameof(OnDespawn), TIME_SELF_DESPAWN);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D other)
+    {
+        Enemy enemy = Cache.GetEnemy(other);
+        if(enemy)
         {
-            //PlayerStats playerStats = PlayerManager.instance.player.GetComponent<PlayerStats>();
-            // EnemyStats enemyTarget = collision.GetComponent<EnemyStats>();
-            // playerStats.DoMagicalDamage(enemyTarget);
+            PlayerStats playerStats = LevelManager.Instance.Player.characterStats as PlayerStats;
+            EnemyStats enemyTarget = enemy.characterStats as EnemyStats;
+            playerStats.DoMagicalDamage(enemyTarget);
         }
     }
 }

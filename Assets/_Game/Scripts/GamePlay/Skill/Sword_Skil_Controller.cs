@@ -35,6 +35,7 @@ public class Sword_Skil_Controller : GameUnit
     float hitTimer, hitCooldown;
     float freezeTime;
     
+    float spinDirection;
 
 
     void Start()
@@ -70,7 +71,7 @@ public class Sword_Skil_Controller : GameUnit
         rb.constraints = RigidbodyConstraints2D.None;
         isReturning = isBouncing = isSpining = wasStopped = false;
 
-        
+        spinDirection = Mathf.Clamp(rb.velocity.x, -1 , 1);
         targetIndex = 0;
         enemyTargets.Clear();
         Invoke(nameof(AutoReturn), 6f);
@@ -94,6 +95,9 @@ public class Sword_Skil_Controller : GameUnit
         {
             spinTimer -= Time.deltaTime;
 
+            TF.position = Vector2.MoveTowards(TF.position, new Vector2(TF.position.x + spinDirection, 
+                                                                                        TF.position.y), 1.5f * Time.deltaTime);
+
             if(spinTimer < 0)
             {
                 isReturning = true;
@@ -114,13 +118,19 @@ public class Sword_Skil_Controller : GameUnit
 
                     if(enemyStats)
                     {
-                        player.characterStats.DoDamge(enemyStats);
+                        SwordDoDamage(enemyStats);
                     }
 
                 }
 
             }
         }
+    }
+
+    private void SwordDoDamage(CharacterStats enemyStats)
+    {
+        player.characterStats.DoDamge(enemyStats);
+        Inventory.Instance.GetEquipment(EquipmentType.Amulet)?.ExecuteItemEffect(enemyStats.transform);
     }
 
     private void StopWhenSpining()
@@ -157,11 +167,14 @@ public class Sword_Skil_Controller : GameUnit
     private void Bounce()
     {
         ChangeAnim(Constants.ANIM_FLIP);
+        if(enemyTargets[targetIndex] == null)
+            return;
+
         TF.position = Vector2.MoveTowards(TF.position, enemyTargets[targetIndex].TF.position, bounceSpeed * Time.deltaTime);
         if (Vector2.Distance(TF.position, enemyTargets[targetIndex].TF.position) < 0.1f)
         {
             //enemyTargets[targetIndex].OnHit(player.characterStats.damage.GetValue());
-            player.characterStats.DoDamge(enemyTargets[targetIndex].characterStats);
+            SwordDoDamage(enemyTargets[targetIndex].characterStats);
             targetIndex++;
             bounceAmount--;
 
@@ -234,7 +247,7 @@ public class Sword_Skil_Controller : GameUnit
 
         if(enemyStats)
         {
-            player.characterStats.DoDamge(enemyStats);
+            SwordDoDamage(enemyStats);
             Enemy enemy = Cache.GetEnemy(other);
             enemy.FreezeState();
             GetBounceTarget();

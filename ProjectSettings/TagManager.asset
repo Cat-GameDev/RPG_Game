@@ -17,7 +17,7 @@ TagManager:
   - Enemy
   - PlayerAttackArea
   - EnemyAttackArea
-  - 
+  - Item
   - 
   - 
   - 
@@ -47,6 +47,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 3241350817
+    locked: 0
+  - name: Item
+    uniqueID: 2096727573
     locked: 0
   - name: Enemy
     uniqueID: 180071737

@@ -154,6 +154,12 @@ public enum PoolType
     Shock_Strike,
     HealthBar_UI,
     CombatText_UI,
+    Item_Object,
+    ThunderStrike_Effect,
+    IceAndFire_Effect,
+    Fire_Effect,
+    Ice_Effect,
+    
     
     
 }

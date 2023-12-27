@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 4264873761619770496}
   - component: {fileID: 8293025254171387556}
   - component: {fileID: 7333680811200305200}
+  - component: {fileID: 4715976908215901866}
   m_Layer: 8
   m_Name: Enemy_Skeleton
   m_TagString: Untagged
@@ -369,6 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0ba9d0f078ebc43b6a629c455dc54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDrop: {fileID: 4715976908215901866}
   characterFX: {fileID: 8293025254171387556}
   strength:
     baseValue: 0
@@ -407,7 +409,7 @@ MonoBehaviour:
     baseValue: 0
     modifiers: 
   iceDamage:
-    baseValue: 1
+    baseValue: 0
     modifiers: 
   lightingDamage:
     baseValue: 0
@@ -415,9 +417,28 @@ MonoBehaviour:
   isIgnited: 0
   isChilled: 0
   isShocked: 0
-  ailmentsDuration: 4
   currrentHp: 0
   enemy: {fileID: 4264873761619770496}
+  level: 1
+  percantageModifier: 0.4
+--- !u!114 &4715976908215901866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4264873761619770500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624118fab68f2ba48980421fd4d6556a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  possibleItemDrop: 2
+  possibleDrop:
+  - {fileID: 11400000, guid: 10176b5c8a1a0854ca70534ed5b61754, type: 2}
+  - {fileID: 11400000, guid: 91cb2b88028c90e4b80c0357c0615f4b, type: 2}
+  - {fileID: 11400000, guid: 6db1e57af54daa04eab9b0dd12ea160a, type: 2}
+  - {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
 --- !u!1 &4264873762315452959
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,7 +512,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 180071737
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -85727878, guid: 687df074731fbf744b668d2275dbb675, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

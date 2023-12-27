@@ -21,6 +21,7 @@ public class ShockStrike_Controller : GameUnit
 
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
+        Invoke(nameof(OnDespawn), 2f);
     }
 
     public void Setup(int _damage, CharacterStats _targetStats)
