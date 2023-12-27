@@ -14,7 +14,7 @@ public class ItemObject : GameUnit
 
         sr.sprite = itemData.icon;
         gameObject.name = "Item Oject - " + itemData.name;
-        Invoke(nameof(OnDespawn), 4f);
+        Invoke(nameof(OnDespawn), 10f);
     }
 
     public void SetupItem(ItemData itemData, Vector2 velocity)

@@ -29,6 +29,7 @@ public abstract class Character : GameUnit
         defaultMoveSpeed = moveSpeed;
     }
 
+
     public virtual void SlowCharacterBy(float slowPercentage, float slowDuration)
     {
         moveSpeed = moveSpeed * (1 - slowPercentage);

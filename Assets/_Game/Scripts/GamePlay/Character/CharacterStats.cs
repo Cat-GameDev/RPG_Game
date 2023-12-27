@@ -91,6 +91,12 @@ public abstract class CharacterStats : MonoBehaviour, IHit
         itemDrop.GenerateDrop();
     }
 
+    public void RecoverHealth(float hp)
+    {
+        currrentHp+=hp;
+        healthBar_UI.SetNewHp(currrentHp);
+    }
+
     public virtual void DoDamge(CharacterStats characterStats)
     {
         if (TargetCanVoidAttack(characterStats))

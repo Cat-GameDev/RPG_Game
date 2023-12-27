@@ -7,7 +7,7 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField] List<Enemy> enemies = new List<Enemy>();
 
     public Player Player { get => player;}
-
+    public int currentLevel;
     void Start()
     {
         player.OnInit();

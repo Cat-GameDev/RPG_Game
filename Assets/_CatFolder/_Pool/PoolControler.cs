@@ -159,6 +159,7 @@ public enum PoolType
     IceAndFire_Effect,
     Fire_Effect,
     Ice_Effect,
+    HealthPotion,
     
     
     
