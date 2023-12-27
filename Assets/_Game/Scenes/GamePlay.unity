@@ -4390,6 +4390,7 @@ MonoBehaviour:
   - {fileID: 4715976908215901860}
   - {fileID: 1067478513}
   - {fileID: 1792124541}
+  currentLevel: 0
 --- !u!4 &1856491599
 Transform:
   m_ObjectHideFlags: 0
@@ -4569,28 +4570,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 10176b5c8a1a0854ca70534ed5b61754, type: 2}
+      objectReference: {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 91cb2b88028c90e4b80c0357c0615f4b, type: 2}
+      objectReference: {fileID: 11400000, guid: 95b809281dfedb74bb99e8a20f39ce79, type: 2}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 6db1e57af54daa04eab9b0dd12ea160a, type: 2}
+      objectReference: {fileID: 11400000, guid: a8a995fda267e2d47a647b86706f4580, type: 2}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[3]
       value: 
-      objectReference: {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
+      objectReference: {fileID: 11400000, guid: a8a995fda267e2d47a647b86706f4580, type: 2}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[4]
       value: 
-      objectReference: {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
+      objectReference: {fileID: 11400000, guid: a8a995fda267e2d47a647b86706f4580, type: 2}
     - target: {fileID: 7333680811200305200, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: level
       value: 1

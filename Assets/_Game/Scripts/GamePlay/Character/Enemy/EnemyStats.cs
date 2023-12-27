@@ -19,6 +19,7 @@ public class EnemyStats : CharacterStats
         ApplyLevelModifiers();
         base.OnInit();
         CreateHealthBar();
+        level = LevelManager.Instance.currentLevel;
     }
 
     private void ApplyLevelModifiers()
