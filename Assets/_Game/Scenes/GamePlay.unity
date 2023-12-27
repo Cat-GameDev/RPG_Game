@@ -4570,7 +4570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4715976908215901866, guid: 829141e7bde698b49929ec61112b68b3, type: 3}
       propertyPath: possibleDrop.Array.data[0]
