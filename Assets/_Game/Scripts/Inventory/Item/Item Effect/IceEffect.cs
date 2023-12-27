@@ -10,4 +10,5 @@ public class IceEffect : ItemEffect
 
         ice_Controller.OnInit();
     }
+
 }

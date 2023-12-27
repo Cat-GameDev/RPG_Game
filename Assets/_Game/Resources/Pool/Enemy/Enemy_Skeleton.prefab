@@ -433,8 +433,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624118fab68f2ba48980421fd4d6556a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  possibleItemDrop: 0
-  possibleDrop: []
+  possibleItemDrop: 2
+  possibleDrop:
+  - {fileID: 11400000, guid: 10176b5c8a1a0854ca70534ed5b61754, type: 2}
+  - {fileID: 11400000, guid: 91cb2b88028c90e4b80c0357c0615f4b, type: 2}
+  - {fileID: 11400000, guid: 6db1e57af54daa04eab9b0dd12ea160a, type: 2}
+  - {fileID: 11400000, guid: 1abaae7412aef3b4fa410958162b61ea, type: 2}
 --- !u!1 &4264873762315452959
 GameObject:
   m_ObjectHideFlags: 0

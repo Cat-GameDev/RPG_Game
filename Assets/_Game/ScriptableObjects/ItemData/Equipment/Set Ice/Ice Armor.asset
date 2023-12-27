@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc4f826367acb744c88ab745cc3d0fb4, type: 3}
-  m_Name: Amulet Of God
+  m_Name: Ice Armor
   m_EditorClassIdentifier: 
   itemType: 1
-  itemName: Amulet Of God
-  icon: {fileID: -245851270, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
-  dropChance: 20
-  equipmentType: 2
-  ItemEffects:
-  - {fileID: 11400000, guid: bf45b8d26eeefc94b99f6feaacaeae3c, type: 2}
+  itemName: 'Ice Armor '
+  icon: {fileID: 21300000, guid: 63e22ef7df242214884c897f55ac19a5, type: 3}
+  dropChance: 0
+  equipmentType: 1
+  ItemEffects: []
   strength: 0
   agility: 0
   intelligence: 0
@@ -29,7 +28,7 @@ MonoBehaviour:
   health: 0
   armor: 0
   evasion: 0
-  magicResistance: 15
+  magicResistance: 0
   fireDamage: 0
   iceDamage: 0
-  lightingDamage: 10
+  lightingDamage: 0

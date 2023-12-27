@@ -35,6 +35,7 @@ public class Sword_Skil_Controller : GameUnit
     float hitTimer, hitCooldown;
     float freezeTime;
     
+    float spinDirection;
 
 
     void Start()
@@ -70,7 +71,7 @@ public class Sword_Skil_Controller : GameUnit
         rb.constraints = RigidbodyConstraints2D.None;
         isReturning = isBouncing = isSpining = wasStopped = false;
 
-        
+        spinDirection = Mathf.Clamp(rb.velocity.x, -1 , 1);
         targetIndex = 0;
         enemyTargets.Clear();
         Invoke(nameof(AutoReturn), 6f);
@@ -93,6 +94,9 @@ public class Sword_Skil_Controller : GameUnit
         if (wasStopped)
         {
             spinTimer -= Time.deltaTime;
+
+            TF.position = Vector2.MoveTowards(TF.position, new Vector2(TF.position.x + spinDirection, 
+                                                                                        TF.position.y), 1.5f * Time.deltaTime);
 
             if(spinTimer < 0)
             {
