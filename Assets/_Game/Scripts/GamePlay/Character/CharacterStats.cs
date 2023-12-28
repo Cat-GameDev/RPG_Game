@@ -1,5 +1,23 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
+public enum StatType
+{
+    strength,
+    agility,
+    intelegence,
+    vitality,
+    damage,
+    critChance,
+    critPower,
+    health,
+    armor,
+    evasion,
+    magicRes,
+    fireDamage,
+    iceDamage,
+    lightingDamage
+}
+
 
 public abstract class CharacterStats : MonoBehaviour, IHit
 {
@@ -25,7 +43,7 @@ public abstract class CharacterStats : MonoBehaviour, IHit
 
 
     [Header("Defensive stats")]
-    public Stats hp;
+    public Stats maxHealth;
     public Stats armor; // giap
     public Stats evasion; // le tranh
     public Stats magicResistance;
@@ -80,10 +98,11 @@ public abstract class CharacterStats : MonoBehaviour, IHit
 
     public virtual void OnInit()
     {
-        currrentHp = hp.GetValue();
+        currrentHp = maxHealth.GetValue();
         critPower.SetDefoutlValue(150);
         isShocked = isChilled = isIgnited = false;
     }
+
 
     protected abstract void CreateHealthBar();
     public virtual void OnDeath()
@@ -339,4 +358,25 @@ public abstract class CharacterStats : MonoBehaviour, IHit
     }
 
     #endregion
+
+
+    public Stats GetStat(StatType _statType)
+    {
+        if (_statType == StatType.strength) return strength;
+        else if (_statType == StatType.agility) return agility;
+        else if (_statType == StatType.intelegence) return intelligence;
+        else if (_statType == StatType.vitality) return vitality;
+        else if (_statType == StatType.damage) return damage;
+        else if (_statType == StatType.critChance) return critChance;
+        else if (_statType == StatType.critPower) return critPower;
+        else if (_statType == StatType.health) return maxHealth;
+        else if (_statType == StatType.armor) return armor;
+        else if (_statType == StatType.evasion) return evasion;
+        else if (_statType == StatType.magicRes) return magicResistance;
+        else if (_statType == StatType.fireDamage) return fireDamage;
+        else if (_statType == StatType.iceDamage) return iceDamage;
+        else if (_statType == StatType.lightingDamage) return lightingDamage;
+
+        return null;
+    }
 }

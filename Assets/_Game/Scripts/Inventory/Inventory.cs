@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -19,15 +20,18 @@ public class Inventory : Singleton<Inventory>
     [SerializeField] Transform inventorySlotParent;
     [SerializeField] Transform stashSlotParent;
     [SerializeField] Transform equipmentParent;
+    [SerializeField] Transform statSlotParent;
     private ItemSlot_UI[] invetoryItemSlot_UI;
     private ItemSlot_UI[] stashItemSlot_UI;
     private EquipmentSlot_UI[] equipmentSlot_UI;
+    private UI_StatSlot[] statSlots_UI;
 
     void Start()
     {
         invetoryItemSlot_UI = inventorySlotParent.GetComponentsInChildren<ItemSlot_UI>();
         stashItemSlot_UI = stashSlotParent.GetComponentsInChildren<ItemSlot_UI>();
         equipmentSlot_UI = equipmentParent.GetComponentsInChildren<EquipmentSlot_UI>();
+        statSlots_UI = statSlotParent.GetComponentsInChildren<UI_StatSlot>();
 
         for (int i = 0; i < staringItem.Count; i++)
         {
@@ -107,10 +111,17 @@ public class Inventory : Singleton<Inventory>
         {
             stashItemSlot_UI[i].UpdateItemSlot(stash[i]);
         }
+
+        for(int i =0; i< statSlots_UI.Length; i++)
+        {
+            statSlots_UI[i].UpdateStatValue();
+        }
     }
 
     public void AddItem(ItemData itemData)
     {
+        if(!CanAddItem()) return;
+
         if (itemData.itemType == ItemType.Equipment)
         {
             AddToInventory(itemData);
@@ -122,6 +133,15 @@ public class Inventory : Singleton<Inventory>
         
 
         UpdateSlotUI();
+    }
+
+    public bool CanAddItem()
+    {
+        if(inventory.Count >= invetoryItemSlot_UI.Length)
+        {
+            return false;
+        }
+        return true;
     }
 
     private void AddToStash(ItemData itemData)
@@ -197,6 +217,44 @@ public class Inventory : Singleton<Inventory>
         }
 
         return equipedItem;
+    }
+
+    public bool CanCraft(ItemData_Equip _itemToCraft, List<InventoryItem> _requiredMaterials)
+    {
+        List<InventoryItem> materialsToRemove = new List<InventoryItem>();
+
+        for (int i = 0; i < _requiredMaterials.Count; i++)
+        {
+            if (stashDictionary.TryGetValue(_requiredMaterials[i].itemData, out InventoryItem stashValue))
+            {
+                if (stashValue.stackSize < _requiredMaterials[i].stackSize)
+                {
+                    Debug.Log("Not enough materials");
+                    return false;
+                }
+                else
+                {
+                    materialsToRemove.Add(stashValue);
+                }
+
+            }
+            else
+            {
+                Debug.Log("Materials not found");
+                return false;
+            }
+        }
+
+
+        for (int i = 0; i < materialsToRemove.Count; i++)
+        {
+            RemoveItem(materialsToRemove[i].itemData);
+        }
+
+        AddItem(_itemToCraft);
+        Debug.Log("Here is your item " + _itemToCraft.name);
+
+        return true;
     }
 
 }

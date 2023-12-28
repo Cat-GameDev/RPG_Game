@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb32771e4dd99434ea0d4c63637c1ee5, type: 3}
   m_Name: ThunderStrikeEffect
   m_EditorClassIdentifier: 
+  effectDescription: Thunder

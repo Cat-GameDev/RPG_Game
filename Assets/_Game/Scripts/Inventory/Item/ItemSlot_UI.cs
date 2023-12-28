@@ -2,12 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using JetBrains.Annotations;
 
-public class ItemSlot_UI : MonoBehaviour, IPointerClickHandler
+public class ItemSlot_UI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] TextMeshProUGUI text;
-    [SerializeField] Image image;
+    [SerializeField] protected TextMeshProUGUI text;
+    [SerializeField] protected Image image;
     public InventoryItem item;
+    [SerializeField] UI_Button button;
+    [SerializeField] RectTransform itemClicked;
+    [SerializeField] UI_ItemTooltip itemTooltip;
 
     public void UpdateItemSlot(InventoryItem newItem)
     {
@@ -40,14 +44,56 @@ public class ItemSlot_UI : MonoBehaviour, IPointerClickHandler
         text.SetText("");
     }
 
+    public void EquipItem()
+    {
+        Debug.Log(gameObject.name);
+        if(item.itemData.itemType == ItemType.Equipment)
+        {
+            Inventory.Instance.EquipItem(item.itemData);
+        }
+
+        button?.RemoveAđListener(this);
+        button?.gameObject.SetActive(false);
+
+        itemClicked?.gameObject.SetActive(false);
+    }
+
+    public void DeleteItem()
+    {
+        if(item.itemData != null)
+            Inventory.Instance.RemoveItem(item.itemData);
+        
+        button?.RemoveAđListener(this);
+        button?.gameObject.SetActive(false);
+
+        itemClicked?.gameObject.SetActive(false);
+    }
+
+    
     public virtual void OnPointerClick(PointerEventData eventData)
     {
         if(item == null)
             return;
 
-        if(item.itemData.itemType == ItemType.Equipment)
+        button?.AddListener(this);
+        button?.gameObject.SetActive(true);
+
+
+        if (itemClicked != null)
         {
-            Inventory.Instance.EquipItem(item.itemData);
+            itemClicked.position = transform.position;
+            itemClicked.gameObject.SetActive(true);
         }
+        
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        itemTooltip?.ShowToolTip(item?.itemData as ItemData_Equip);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        itemTooltip?.HideToolTip();
     }
 }

@@ -32,7 +32,7 @@ public class EnemyStats : CharacterStats
         Modify(critChance);
         Modify(critPower);
 
-        Modify(hp);
+        Modify(maxHealth);
         Modify(armor);
         Modify(evasion);
         Modify(magicResistance);
@@ -77,7 +77,7 @@ public class EnemyStats : CharacterStats
         if(healthBar_UI == null)
         {
             healthBar_UI = SimplePool.Spawn<HealthBar_UI>(PoolType.HealthBar_UI);
-            healthBar_UI.OnInit(hp.GetValue(), enemy.TF, HEALTHBAR_POSITION);
+            healthBar_UI.OnInit(maxHealth.GetValue(), enemy.TF, HEALTHBAR_POSITION);
         }
     }
 

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0188888a0721b224b86a4bd0d01b106f, type: 3}
   m_Name: IceAndFireEffect
   m_EditorClassIdentifier: 
+  effectDescription: Ice and Fire
   moveSpeed: 10

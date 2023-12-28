@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b1687522cc29c42ba044b8d6d0d30c, type: 3}
   m_Name: FireEffect
   m_EditorClassIdentifier: 
+  effectDescription: Fire
