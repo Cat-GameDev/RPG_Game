@@ -2,27 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Crystal_Skill : Skill
 {
     public const float TIME_DELAY_CRYSTAL = 0.07f;
-    Crystal_Skill_Controller crystal_Skill_Controller;
+    Crystal_Skill_Controller crystal_Skill_Controller = null;
     [SerializeField] float crystalDuration; //TODO: increase Cooldown(In Skill) 2.5f if canMove
     [SerializeField] float moveSpeed;
 
-    
-    public bool cloneInsteadOfCrystal;
     public bool canMultiCrystal;
     public bool canMove;
     public bool canExplode;
 
+    
+
+    public bool crystalUnlocked;
+    [SerializeField] private UI_SkillTreeSlot unlockCrystalButton;
+    [SerializeField] private UI_SkillTreeSlot unlockExplosiveButton;
+    [SerializeField] private UI_SkillTreeSlot unlockMovingCrystalButton;
+    [SerializeField] private UI_SkillTreeSlot unlockMultiStackButton;
+    protected override void Start()
+    {
+        base.Start();
+        unlockCrystalButton.GetComponent<Button>().onClick.AddListener(UnlockCrystal);
+        unlockExplosiveButton.GetComponent<Button>().onClick.AddListener(UnlockExplosiveCrystal);
+        unlockMovingCrystalButton.GetComponent<Button>().onClick.AddListener(UnlockMovingCrystal);
+        unlockMultiStackButton.GetComponent<Button>().onClick.AddListener(UnlockMultiStack);
+    }
+
+    #region Unlock skill region
+    protected void CheckUnlock()
+    {
+        UnlockCrystal();
+        UnlockExplosiveCrystal();
+        UnlockMovingCrystal();
+        UnlockMultiStack();
+
+
+    }
+    private void UnlockCrystal()
+    {
+        if (unlockCrystalButton.unlocked)
+            crystalUnlocked = true;
+    }
+
+    private void UnlockExplosiveCrystal()
+    {
+        if (unlockExplosiveButton.unlocked)
+        {
+            canExplode = true;
+            cooldown = crystalDuration;
+        }
+    }
+
+    private void UnlockMovingCrystal()
+    {
+        if (unlockMovingCrystalButton.unlocked)
+            canMove = true;
+    }
+
+    private void UnlockMultiStack()
+    {
+        if (unlockMovingCrystalButton.unlocked)
+            canMultiCrystal = true;
+    }
+
+    #endregion 
+
     public override void UseSkill()
     {
-        base.UseSkill();
+        //base.UseSkill();
         if(canMultiCrystal)
         {
             StartCoroutine(SpawnCrystalsWithDelay());
-            canMultiCrystal = false;
+            return;
         }
         else if(crystal_Skill_Controller == null)
         {
@@ -48,12 +102,6 @@ public class Crystal_Skill : Skill
             Vector3 currentPositon = player.TF.position;
             player.TF.position = crystal_Skill_Controller.TF.position;
             crystal_Skill_Controller.TF.position = currentPositon;
-
-
-            if(cloneInsteadOfCrystal)
-            {
-                SkillManager.Instance.Clone_Skill.CreateClone(currentPositon, player.IsRight, player.CanAttack, player.characterStats.damage.GetValue());
-            }
             
             SelfDespawn();
         }
@@ -63,9 +111,14 @@ public class Crystal_Skill : Skill
 
     public void CreateCrystal()
     {
-        crystal_Skill_Controller = SimplePool.Spawn<Crystal_Skill_Controller>
-                                                    (PoolType.Crystal, player.TF.position, Quaternion.identity);
-        crystal_Skill_Controller.OnInit(moveSpeed, canMove, player);
+        if(!crystalUnlocked) return;
+        
+        if(crystal_Skill_Controller == null)
+        {
+            crystal_Skill_Controller = SimplePool.Spawn<Crystal_Skill_Controller>(PoolType.Crystal, player.TF.position, Quaternion.identity);
+            crystal_Skill_Controller.OnInit(moveSpeed, canMove, player);
+        }
+        
     }
 
     private void SelfDespawn()

@@ -173,7 +173,7 @@ public class Player : Character
 
     public void Dash()
     {
-        if(isThrowAttack)
+        if(isThrowAttack || !skill.Dash_Skill.dashUnlocked)
             return;
 
         if(skill.Dash_Skill.CanUseSkill())
@@ -361,8 +361,6 @@ public class Player : Character
     {
         onEnter = () =>
         {
-            skill.Clone_Skill.CreateStartClone(TF.position, isRight, canAttack, characterStats.damage.GetValue());
-
             ChangeAnim(Constants.ANIM_DASH);
             isDashing = true;
             
@@ -559,6 +557,11 @@ public class Player : Character
     {
         onEnter = () =>
         {   
+            if(GameManager.Instance.IsState(GameState.UltimateSkill))
+            {
+                currentSword = null;
+                return;
+            }
             //rotation của Player = đã lưu ở trên ThrowAttackState
             TF.rotation = throwAttackRotation;
             

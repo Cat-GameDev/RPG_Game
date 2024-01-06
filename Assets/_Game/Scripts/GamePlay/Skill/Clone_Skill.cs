@@ -6,8 +6,6 @@ public class Clone_Skill : Skill
 {
     [Header("Clone info")]
     [SerializeField] float cloneDuration;
-    [SerializeField] bool canCreateStartCloneOnDash;
-    [SerializeField] bool canCreateOverCloneOnDash;
     [SerializeField] bool canCreateCloneCounterAttack;
     [SerializeField] bool canDuplicateClone;
     [SerializeField] bool crystalInsteadOfClone;
@@ -21,23 +19,6 @@ public class Clone_Skill : Skill
         {
             CreateClone(position, isRight, canAttack, damage);
         }
-    }
-
-    public void CreateStartClone(Vector3 position, bool isRight, bool canAttack, float damage)
-    {
-        if(canCreateStartCloneOnDash)
-        {
-            CreateClone(position, isRight, canAttack, damage);
-        }
-    }
-
-    public void CreateOverClone(Vector3 position, bool isRight, bool canAttack, float damage)
-    {
-        if(canCreateOverCloneOnDash)
-        {
-            CreateClone(position, isRight, canAttack, damage);
-        }
-
     }
 
     public void CreateClone(Vector3 position, bool isRight, bool canAttack, float damage)
